@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+     科室名称：<span id="roomname"></span>
+     科室备注：<span id="remark"></span>
+     在线医生：<span id="username"></span>
+     <button class="btn btn-primary" onclick="getappinfo()">预约</button>
+     <script src="/js/jquery.min.js"></script>
+     <script>
+         var str = window.location.pathname;
+         var index = str.lastIndexOf("\/");
+         str  = str .substring(index + 1, str .length);
+         var data;
+         getroominfo();
+
+         function getroominfo(){
+             $.ajax({
+                 url: "/appointroominfo/"+str,
+                 async : false,
+                 type : 'get',
+                 data:{},
+                 success:function(result){
+                     data = result;
+                     $("#roomname").html(result.roomname);
+                     $("#remark").html(result.remark);
+                     $("#username").html(result.username);
+                 },
+                 error:function(data){
+                     alert("人员管理服务没有启动，请启动");
+                 }
+             });
+         }
+
+
+        function getappinfo(){
+            $.ajax({
+                url: "/getappinfo",
+                async : false,
+                type : 'get',
+                data:{
+                    roomid:str
+                },
+                success:function(result){
+                    if(result.length>0){
+                        alert("您已经预约过了");
+                    }else{
+                        appointment();
+                    }
+                },
+                error:function(data){
+                    alert("人员管理服务没有启动，请启动");
+                }
+            });
+        }
+        function appointment(){
+             var userappointdata = {
+                 userappointid:guid(),
+                 roomid:data.roomid,
+                 roomname:data.roomname,
+                 doctorid:data.employeeid,
+                 doctorname:data.username,
+                 remark:data.remark
+             }
+            $.ajax({
+                url: "/userappoint",
+                async : false,
+                type : 'post',
+                data:{
+                    userappointdata:JSON.stringify(userappointdata)
+                },
+                success:function(result){
+                    alert("预约成功，请及时到达医院");
+                },
+                error:function(data){
+                    alert("人员管理服务没有启动，请启动");
+                }
+            });
+        }
+     </script>
+     <script src="/js/common.js"></script>
+     <script src="/js/jquery.min.js"></script>
+</body>
+
+</html>

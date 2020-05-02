@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/js/mui/mui.min.css">
+</head>
+<body>
+<script src="/js/mui/mui.js"></script>
+<script src="/js/jquery.min.js"></script>
+<span>预约列表</span>
+<div >
+    <ul class="mui-table-view" id="appointmentlist">
+
+    </ul>
+</div>
+
+
+<script>
+    getappointlist();
+    function getappointlist() {
+        $.ajax({
+            url: "/getroomlist",
+            async : false,
+            type : 'get',
+            data:{},
+            success:function(result){
+                var html ="";
+                if(result == null || result.length == 0){
+
+                }else{
+                    for(var i = 0;i<result.length;i++){
+                        html = html +"<li class=\"mui-table-view-cell\">\n" +
+                            "            <a class=\"mui-navigate-right\" href='/appointroom/" +result[i].roomid+
+                            "' >"+result[i].roomname+"</a>\n" +
+                            "        </li>";
+                    }
+                }
+
+                $("#appointmentlist").html(html);
+            },
+            error:function(data){
+                alert("人员管理服务没有启动，请启动");
+            }
+        })
+
+    }
+
+
+
+</script>
+</body>
+</html>

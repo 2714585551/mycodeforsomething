@@ -1,0 +1,74 @@
+@charset "utf-8";
+/* CSS Document */
+*{ margin:0; padding:0;}
+img{ border:none;}
+body{ font-family:"宋体"; font-size:12px; margin:0 auto; background-color:#fff;color:#605f5f;}
+.wrapper{ width:1000px; margin:0 auto; }
+h2{ font-size:18px; color:#55478d;}
+h3{font-size:16px;}
+.fl{ float:left;}
+.fr{ float:right;}
+.clear{ clear:both;}
+li{ list-style:none;}
+p{ line-height:22px;}
+a{ text-decoration:none;}
+a,a:link,a:hover{color:#605f5f;}
+
+.backg-none{ background:none !important;}
+fieldset {border:none; border-top:#7f7e7e dotted 1px; margin:20px 0;}
+legend{font-family:"黑体"; font-size:30px; color:#010101; text-align:center; background:#fff; padding:0 40px; margin:0 200px;}
+
+.logo { margin: 12px 0; }
+.top_area { overflow: hidden; }
+.top_area .up { text-align: right; margin-top: 10px; position: relative; }
+.top_area .up a { margin: 0 9px; font-size: 14px; }
+.top_area .bottom { margin-top: 25px; }
+.top_area .version{ overflow:hidden; margin-left:30px;}
+.top_area .version a { margin: 0 3px; font-size: 14px;width:63px; height:31px;  background:url(/images/icon.png)  no-repeat; float:left; display:block; text-align:center; line-height:31px; }
+.search { margin: 0px 0 0 10px; width: 316px;*width:326px; overflow: hidden; }
+.search input[type=text], .search input[type=submit], .search input[type=button] { display: block; float: left; border: none; }
+.search input[type=text] { background: #fff; border: #b4b4b4 1px solid; width: 250px; height: 14px; vertical-align: middle; line-height: 14px; padding: 7px 5px; outline: none; }
+.search input[type=submit], .search input[type=button] { background: #104ea3; color: #fff; position: relative; width: 54px; height: 30px; border: none; vertical-align: middle; cursor: pointer; font-size: 12px; }
+
+.menu_area { background-color: #ededed; height: 40px; line-height: 40px; position:relative; }
+.menu_area li{ float:left; }
+.menu_area li a { font-size: 14px; color: #3d3d3d; font-weight: bold; padding: 12.5px 30px; }
+.menu_area li.hover{background: #6aa2d1;}
+.menu_area li.hover a{color:#fff;}
+.menu_area li.current{ background-color: #104ea3; }
+.menu_area li.current a{ color: #fff; }
+
+.menu_area .sub_menu { padding: 0 2%; text-align: center; background: #6aa2d1; position: absolute; left: 0; top: 40px; width: 98%;*width:96%; z-index: 1110; display:none; overflow:hidden; text-align: center;}
+.menu_area .sub_menu a { line-height: 30px;padding:0 10px; color:#fff;background: none !important;   }
+.menu_area .sub_menu a:hover { text-decoration:underline; background: none !important; color:#fff; }
+
+.search_area { background-color: #d5e3fd; overflow: hidden; height: 50px; }
+.search_title { color: #0080c7; font-size: 16px; margin-left: 40px; }
+.search_title img { vertical-align: -10%; margin-right: 5px; }
+.search_area p { float: left; line-height: 50px; margin-left: 40px; }
+.search_area label { margin-right: 5px; }
+.search_area select { border: 1px solid #ccc; font-size: 12px; font-weight: 400; line-height: 26px;padding: 5px; padding:2px 5px\9; height: 26px; vertical-align: middle; width: 110px; }
+.search_area input[type=submit], .search_area input[type=button] { background: #3550df; color: #fff; position: relative; width: 40px; height: 24px; border: none; vertical-align: middle; cursor: pointer; font-size: 12px; margin-left: 3px; }
+/*�޸ĵ�*/
+fieldset {border:none; border-top:#7f7e7e dotted 1px; margin:20px 0;height:46px;line-height:46px;}
+.jianjie li img {width:146px;height:101px;}
+.jianjie li {float:left;  padding: 10px; /* color: #dddddd; */background-color: #dddddd;width:146px;}
+.jianjie{margin-left: 30px;}
+
+
+/*修改*/
+
+.menu_area .sub_menu {padding:0;width:100%;}
+a,a:link,a:hover{color:#000000;}
+
+
+/*body{
+	background: #abc5fd;
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#abc5fd), to(#ffffff));
+	background: -webkit-linear-gradient(#abc5fd 0%, #ffffff 100%);
+	background: -moz-linear-gradient(#abc5fd 0%, #ffffff 100%);
+	background: -o-linear-gradient(#abc5fd 0%, #ffffff 100%);
+	background: linear-gradient(#abc5fd 0%, #ffffff 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#abc5fd', endColorstr='#ffffff',GradientType=0 );
+}
+:root body{filter:none;} */
