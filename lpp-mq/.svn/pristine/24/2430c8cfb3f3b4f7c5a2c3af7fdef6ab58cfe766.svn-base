@@ -1,0 +1,43 @@
+/**
+ * 
+ */
+package com.lpp.mq.business;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: ParamUtil
+  * @FullClassPath: com.lpp.mq.business.ParamUtil
+  * @Description: 请求参数
+  * @author: Arno
+  * @date: 2017年3月24日 下午12:27:12
+  * @version: 1.0
+  */
+
+public class ParamUtil {
+
+	/** 
+	* @Title: buildQueryParams 
+	* @Description: 构建分页查询条件 
+	* @createDate: 2017年3月24日 下午12:28:27
+	* @param request
+	* @return QueryPage
+	*/ 
+	public static QueryPage buildQueryParams(HttpServletRequest request){
+		String page = request.getParameter("page");
+		String rows = request.getParameter("rows");
+		String order = request.getParameter("order");
+		String sort = request.getParameter("sort");
+
+		QueryPage queryPage = new QueryPage();
+		queryPage.setOderbyType(order);
+		queryPage.setOrderByField(sort);
+		queryPage.setPage(Integer.valueOf(page));
+		queryPage.setPageSize(Integer.valueOf(rows));
+		
+		return queryPage ;
+	}
+	
+}

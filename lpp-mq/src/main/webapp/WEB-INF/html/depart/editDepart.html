@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-2.0.3.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/miniui/miniui.js"></script>
+<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+
+<style type="text/css">
+html, body {
+	font-size: 12px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	height: 100%;
+	overflow: hidden;
+}
+</style>
+</head>
+<body>
+
+	<form id="departfrom" method="post">
+		<input name="id" class="mini-hidden" />
+		<fieldset style="border: solid 1px #aaa; padding: 10px;">
+			<legend>车次信息</legend>
+			<div style="padding: 3px;">
+				<table cellspacing="5" cellpadding="5">
+					<tr>
+						<td>车序号：</td>
+						<td colspan="3">
+							<input id="departCode" name="departCode" style="width: 95%;"class="mini-textbox"  emptyText="系统自动生成" readonly="true"/>
+						</td>
+		   			 </tr>
+        
+					<tr>
+						<td>总运费:</td>
+						<td >
+							<input id=totalFreight name="totalFreight" style="width: 300px;" class="mini-textbox" vtype="float"  required="true" />
+						<td>到达时间:</td>
+						<td >
+							<input id="arriveTime" name="arriveTime" class="mini-datepicker" style="width:320px;" nullValue="null"
+        					format="yyyy-MM-dd H:mm:ss" timeFormat="H:mm:ss" showTime="true" showOkButton="true" showClearButton="false" required="true" allowInput="false" />
+						</td>
+					</tr>
+				</table>
+			</div>
+		</fieldset>
+		
+		
+		<fieldset style="border: solid 1px #aaa; padding: 10px;">
+			<legend>线路信息</legend>
+			<div style="padding: 3px;">
+				<table cellspacing="5" cellpadding="5">
+				<tr>
+					<td>选择线路：</td>
+					<td colspan="3">
+						 <div class="mini-autocomplete" id="lineCode" name="lineCode" style="width:100%;"  popupWidth="100%" textField="lineCode" valueField="lineCode" 
+		        			url="../line/filter" value="" text=""  onvaluechanged="lineValueChanged" emptyText="输入起点或终点，线路编码" popupEmptyText="未查询到数据">     
+		      			  <div property="columns" >
+		            		<div header="线路编码" field="lineCode" width="30%"></div>
+		            		<div header="起点" field="startName" width="40%"></div>
+		            		<div header="终点" field="endName" width="40%"></div>
+		       			  </div>
+		   			 	 </div>
+					</td>
+	   			 </tr>
+        
+					<tr>
+						<td>起点:</td>
+						<td >
+							<input id="startName" name="startName" style="width: 300px;"class="mini-textbox" required="true" readonly="true"/>
+							<input id="startCode" name="startCode" style="width: 200px; readonly="true" class="mini-hidden" />
+						<td>终点:</td>
+						<td >
+							<input id="endName" name="endName" style="width: 310px;"class="mini-textbox" required="true" readonly="true" />
+							<input id="endCode" name="endCode" style="width: 200px;" readonly="true" class="mini-hidden"/>
+						</td>
+					</tr>
+					<tr>
+						<td>发车时间：</td>
+						<td>
+							<input id="departTime" name="departTime" class="mini-textbox" style="width: 300px;" required="true" readonly="true"/>
+						</td>
+						<td >运输时长：</td>
+						<td>
+							<input id="usesHours" name="usesHours" class="mini-textbox"  style="width: 310px;" required="true" readonly="true"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</fieldset>
+		
+		<fieldset style="border: solid 1px #aaa; padding: 10px;">
+			<legend>司机信息</legend>
+			<div style="padding: 3px;">
+				<table cellspacing="5" cellpadding="5">
+				<tr>
+					<td>选择司机：</td>
+					<td colspan="3">
+						 <div class="mini-autocomplete" style="width:100%;"  popupWidth="100%" textField="personCard" valueField="personCard" 
+		        			url="../driver/filter" value="" text=""  onvaluechanged="driverValueChanged" emptyText="输入姓名或电话，身份证号" popupEmptyText="未查询到数据">     
+		      			  <div property="columns" style="width:100%;">
+		            		<div header="姓名" field="driverName" width="20%"></div>
+		            		<div header="电话" field="mobilePhone" width="40%"></div>
+		            		<div header="身份证号" field="personCard" width="40%"></div>
+		       			  </div>
+		   			 	 </div>
+					</td>
+	   			 </tr>
+        
+					<tr>
+						<td>姓名:</td>
+						<td >
+							<input id=driverName name="driverName" style="width: 300px;"class="mini-textbox" required="true" readonly="true"/>
+						<td>电话:</td>
+						<td >
+							<input id="mobilePhone" name="mobilePhone" style="width: 310px;"class="mini-textbox" required="true" readonly="true" />
+						</td>
+					</tr>
+					<tr>
+						<td>身份证号：</td>
+						<td>
+							<input id="personCard" name="personCard" class="mini-textbox" style="width: 300px;" required="true" readonly="true"/>
+						</td>
+						<td >驾驶证号：</td>
+						<td>
+							<input id="driverNo" name="driverNo" class="mini-textbox"  style="width: 310px;" required="true" readonly="true"/>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>地址：</td>
+						<td colspan="3">
+							<input id="fullAddress" name="fullAddress" class="mini-textarea" style="width: 100%;" required="true" readonly="true"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</fieldset>
+		
+		
+		<div style="text-align: center; padding: 10px;">
+			<a class="mini-button" onclick="onOk"
+				style="width: 60px; margin-right: 20px;">确定</a> <a
+				class="mini-button" onclick="onCancel" style="width: 60px;">取消</a>
+		</div>
+	</form>
+	<script type="text/javascript">
+		mini.parse();
+
+		var form = new mini.Form("departfrom");
+
+		function SaveData() {
+			var fromData = form.getData();
+			form.validate();
+			if (form.isValid() == false) {
+				return;
+			}
+			var json = mini.encode(fromData);
+			$.ajax({
+				url : "../depart/save",
+				type : 'post',
+				data : {
+					data : json
+				},
+				cache : false,
+				success : function(res) {
+					if (res.success) {
+					    mini.alert(res.msg);
+						 setTimeout(function(){
+							 window.CloseOwnerWindow();
+					    },2000) ;
+					}else{
+						  mini.alert(res.msg);
+					}
+					
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					 mini.alert("保存失败");
+				}
+			});
+		}
+
+		////////////////////
+		//标准方法接口定义
+		function SetData(data) {
+			if (data.action == "edit") {
+				//跨页面传递的数据对象，克隆后才可以安全使用
+				data = mini.clone(data);
+				$.ajax({
+					url : "../depart/get",
+					data : {
+						id : data.id
+					},
+					cache : false,
+					success : function(text) {
+						var o = mini.decode(text);
+						form.setData(o);
+						mini.get("lineCode").setValue(o.lineCode) ;
+						mini.get("lineCode").setText(o.lineCode) ;
+					}
+				});
+			}
+		}
+
+		function CloseWindow(action) {
+			if (action == "close" && form.isChanged()) {
+				if (confirm("数据被修改了，是否先保存？")) {
+					return false;
+				}
+			}
+			if (window.CloseOwnerWindow)
+				return window.CloseOwnerWindow(action);
+			else
+				window.close();
+		}
+		function onOk(e) {
+			SaveData();
+		}
+		function onCancel(e) {
+			CloseWindow("cancel");
+		}
+		
+		 function lineValueChanged(e) {
+	         var item = e.selected;
+	         if (item) { 
+	        	mini.get("startCode").setValue(item.startCode) ;
+				mini.get("startName").setValue(item.startName) ;
+				mini.get("endCode").setValue(item.endCode) ;
+				mini.get("endName").setValue(item.endName) ;
+				mini.get("departTime").setValue(item.departTime) ;
+				mini.get("usesHours").setValue(item.usesHours) ;
+	         }else{
+	        	mini.get("startCode").setValue("") ;
+				mini.get("startName").setValue("") ;
+				mini.get("endCode").setValue("") ;
+				mini.get("endName").setValue("") ;
+				mini.get("departTime").setValue("") ;
+				mini.get("usesHours").setValue("") ; 
+	         }
+	     }
+		 
+		 function driverValueChanged(e) {
+			 debugger ;
+	         var item = e.selected;
+	         if (item) { 
+	        	mini.get("driverName").setValue(item.driverName) ;
+				mini.get("mobilePhone").setValue(item.mobilePhone) ;
+				mini.get("personCard").setValue(item.personCard) ;
+				mini.get("driverNo").setValue(item.driverNo) ;
+				mini.get("fullAddress").setValue(item.fullAddress) ;
+	         }else{
+	        	mini.get("driverName").setValue("") ;
+				mini.get("mobilePhone").setValue("") ;
+				mini.get("personCard").setValue("") ;
+				mini.get("driverNo").setValue("") ;
+				mini.get("fullAddress").setValue("") ; 
+	         }
+	     }
+		 
+	</script>
+</body>
+</html>

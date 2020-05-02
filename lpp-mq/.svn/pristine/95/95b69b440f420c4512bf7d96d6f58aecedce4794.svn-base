@@ -1,0 +1,21 @@
+package com.lpp.mq.business.service;
+
+import java.util.List;
+
+import com.lpp.mq.business.entity.Teacher;
+
+/**
+  * @ClassName: TeacherSevice
+  * @FullClassPath: com.lpp.mq.service.TeacherSevice
+  * @Description: TODO
+  * @author: Arno
+  * @date: 2017年3月6日 下午5:32:06
+  * @version: 1.0
+  */
+
+public interface TeacherSevice {
+
+	public List<Teacher> getTeacherList();
+	
+	public Teacher getTeacherByID(Long id);
+}

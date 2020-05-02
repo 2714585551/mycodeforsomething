@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-2.0.3.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/miniui/miniui.js"></script>
+<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+
+<style type="text/css">
+html, body {
+	font-size: 12px;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	height: 100%;
+	overflow: hidden;
+}
+</style>
+</head>
+<body>
+
+	<form id="linefrom" method="post">
+		<input name="id" class="mini-hidden" />
+		<fieldset style="border: solid 1px #aaa; padding: 10px;">
+			<legend>基本信息</legend>
+			<div style="padding: 3px;">
+				<table cellspacing="5" cellpadding="5">
+					<tr>
+						<td>起点:</td>
+						<td >
+							<input id="startCode" name="startCode" style="width: 200px;"class="mini-autocomplete" url="../region/filterCity" valueField="cityCode" textField="cityName" required="true" onvaluechanged="onStartChanged" popupEmptyText="未查询到数据"/>
+							<input id="startName" name="startName" style="width: 200px;" class="mini-hidden"/>
+						</td>
+						<td>终点:</td>
+						<td >
+							<input id="endCode" name="endCode" style="width: 200px;" class="mini-autocomplete" url="../region/filterCity" valueField="cityCode" textField="cityName" required="true" onvaluechanged="onEndChanged" popupEmptyText="未查询到数据"/>
+							<input id="endName"  name="endName" style="width: 200px;" class="mini-hidden"/>
+						</td>
+					</tr>
+					
+					<tr>
+						<td>发车时间：</td>
+						<td>
+							<input name="departTime" class="mini-timespinner"  format="HH:mm"  style="width: 200px;" required="true" />
+						</td>
+						<td >运输时长：</td>
+						<td>
+							<input name="usesHours" class="mini-textbox"  vtype="float" style="width: 200px;" required="true" />
+						</td>
+					</tr>
+					<tr>
+						<td>备注：</td>
+						<td colspan="3">
+							<input name="remark" class="mini-textarea" style="width: 100%;" />
+						</td>
+					</tr>
+				</table>
+			</div>
+		</fieldset>
+		<div style="text-align: center; padding: 10px;">
+			<a class="mini-button" onclick="onOk"
+				style="width: 60px; margin-right: 20px;">确定</a> <a
+				class="mini-button" onclick="onCancel" style="width: 60px;">取消</a>
+		</div>
+	</form>
+	<script type="text/javascript">
+		mini.parse();
+
+		var form = new mini.Form("linefrom");
+
+		function SaveData() {
+			var fromData = form.getData();
+			form.validate();
+			if (form.isValid() == false) {
+				return;
+			}
+			var json = mini.encode(fromData);
+			$.ajax({
+				url : "../line/save",
+				type : 'post',
+				data : {
+					data : json
+				},
+				cache : false,
+				success : function(res) {
+					if (res.success) {
+					    mini.alert(res.msg);
+						 setTimeout(function(){
+							 window.CloseOwnerWindow();
+					    },2000) ;
+					}else{
+						  mini.alert(res.msg);
+					}
+					
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					 mini.alert("保存失败");
+				}
+			});
+		}
+
+		////////////////////
+		//标准方法接口定义
+		function SetData(data) {
+			if (data.action == "edit") {
+				//跨页面传递的数据对象，克隆后才可以安全使用
+				data = mini.clone(data);
+				$.ajax({
+					url : "../line/get",
+					data : {
+						id : data.id
+					},
+					cache : false,
+					success : function(text) {
+						var o = mini.decode(text);
+						form.setData(o);
+						mini.get("startCode").setText(o.startName) ;
+						mini.get("startName").setValue(o.startName) ;
+						mini.get("endCode").setText(o.endName) ;
+						mini.get("endName").setValue(o.endName) ;
+						form.setChanged(false);
+					}
+				});
+			}
+		}
+
+		function CloseWindow(action) {
+			if (action == "close" && form.isChanged()) {
+				if (confirm("数据被修改了，是否先保存？")) {
+					return false;
+				}
+			}
+			if (window.CloseOwnerWindow)
+				return window.CloseOwnerWindow(action);
+			else
+				window.close();
+		}
+		function onOk(e) {
+			SaveData();
+		}
+		function onCancel(e) {
+			CloseWindow("cancel");
+		}
+		
+		 function onStartChanged(e) {
+	         var item = e.selected;
+	         if (item) { 
+	        	 mini.get("startName").setValue(item.cityName)   
+	         }else{
+	        	 mini.get("startName").setValue("") ;  
+	        	 mini.get("startCode").setValue("")  ; 
+	         }
+	     }
+		 
+		 function onEndChanged(e) {
+	         var item = e.selected;
+	         if (item) { 
+	        	 mini.get("endName").setValue(item.cityName)   
+	         }else{
+	        	 mini.get("endName").setValue("");
+	        	 mini.get("endCode").setValue("") ; 
+	         }
+	     }
+		 
+		 
+		 function  startChange (e){
+			 debugger ;
+		 }
+		 
+	</script>
+</body>
+</html>

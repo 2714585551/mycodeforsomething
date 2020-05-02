@@ -1,0 +1,17 @@
+/**
+ * 
+ */
+package com.lpp.mq.core.service;
+
+/**
+  * @ClassName: BaseService
+  * @FullClassPath: com.lpp.mq.core.service.BaseService
+  * @Description: Service封装接口
+  * @author: Arno
+  * @date: 2017年3月15日 下午4:48:55
+  * @version: 1.0
+  */
+
+public interface BaseService {
+
+}

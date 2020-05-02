@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<title></title>
+</head>
+<body>
+	<div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;"><a class="mini-button"
+					plain="true" short_name="ec_invoice_add" iconcls="icon-add"
+					onclick="ec_invoice_add()">新增</a> <a class="mini-button"
+					plain="true" short_name="ec_invoice_del" iconcls="icon-remove"
+					onclick="ec_invoice_del()">删除</a> <span class="separator"></span> <input
+					width="100" id="name" emptyText="姓名" class="mini-textbox" /> <a
+					class="mini-button" plain="true" onclick="do_mysearch()"
+					iconcls="icon-search">搜索</a></td>
+			</tr>
+		</table>
+	</div>
+	<div class="mini-fit">
+		<div class="mini-datagrid" id="user_list" width="100%" height="100%"
+			columnWidth="120" href="" url="user/querylist" totalField="total"
+			dataField="data" showPageInfo="true" pageSizeField="pageSize"
+			pageIndexField="pageIndex" pageSize="20"
+			sizeList="[10,20,50]" autoHideRowDetail="true"
+			allowCellEdit="false" showColumns="true" showReloadButton="true"
+			showSummaryRow="false" allowAlternating="false" showLoading="true"
+			collapseGroupOnLoad="false" selectOnLoad="false" showModified="true"
+			showPageSize="true" showEmptyText="false" showVGridLines="true"
+			allowResizeColumn="true" editNextOnEnterKey="false"
+			frozenEndColumn="-1" showColumnsMenu="false" allowCellValid="false"
+			showPageIndex="true" showPager="true" allowMoveColumn="true"
+			showFilterRow="false" showHGridLines="true"
+			cellEditAction="cellclick" frozenStartColumn="-1" multiSelect="false"
+			sortFieldField="sortField" showTotalCount="true" allowResize="false"
+			enableHotTrack="true" allowUnselect="false" allowCellWrap="false"
+			allowHeaderWrap="false" virtualScroll="false" allowCellSelect="true"
+			sortOrderField="sortOrder" allowSortColumn="true"
+			allowRowSelect="true">
+			<div property="columns">
+				<div type="checkcolumn" header="选择" width="30" align="center"
+					headerAlign="center"></div>
+				<div header="姓名" field="name" width="100"></div>
+				<div header="年龄" field="age" width="100"></div>
+				<div header="电话" field="telephone" width="100"></div>
+				<div header="邮箱" field="email" width="100"></div>
+				<div header="备注" field="mark" width="100"></div>
+
+			</div>
+		</div>
+	</div>
+	<script type='text/javascript'>
+		jQuery(document).keypress(function(e) {
+			if (e.which == 13)
+				do_mysearch();
+		});
+		mini.parse();
+		var grid = mini.get('user_list');
+
+		var bvo = {
+			rdtype : 'json',
+			po : '/gjc/db/po/ec_invoice.po',
+			p : {
+				'employee_id' : '${belonguserid}'
+			}
+		};
+
+		function do_mysearch() {
+			var name = mini.get("name").getValue();
+			bvo.name = null;
+			grid.load({
+				// bvo : bvo
+			});
+		}
+
+		do_mysearch();
+	</script>
+
+</body>
+</html>

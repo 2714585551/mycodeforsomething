@@ -1,0 +1,44 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.dao.impl;
+
+import java.util.Collection;
+
+import org.springframework.stereotype.Repository;
+
+import com.lpp.mq.business.dao.SysLineDao;
+import com.lpp.mq.business.entity.SysLine;
+import com.lpp.mq.core.dao.imp.BaseDaoImpl;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: SysLineDaoImpl
+  * @FullClassPath: com.lpp.mq.business.dao.impl.SysLineDaoImpl
+  * @Description: 线路管理数据层
+  * @author: Arno
+  * @date: 2017年3月29日 下午4:51:28
+  * @version: 1.0
+  */
+
+@Repository
+public class SysLineDaoImpl extends BaseDaoImpl<SysLine, Long> implements SysLineDao {
+
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.core.dao.imp.BaseDaoImpl#findPage(com.lpp.mq.core.vo.QueryPage)
+	 */
+	@Override
+	public PageData<SysLine> findPage(QueryPage queryPage) {
+		return super.findPage(queryPage);
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.core.dao.imp.BaseDaoImpl#deleteByPK(java.util.Collection)
+	 */
+	@Override
+	public void deleteByPK(Collection<?> collections) {
+		super.deleteByPK(collections);
+	}
+	
+}

@@ -1,0 +1,94 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.lpp.mq.business.dao.SysLineDao;
+import com.lpp.mq.business.entity.SysLine;
+import com.lpp.mq.business.service.SysLineService;
+import com.lpp.mq.core.exception.BusinessException;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: SysLineServiceImpl
+  * @FullClassPath: com.lpp.mq.business.service.impl.SysLineServiceImpl
+  * @Description: 线路管理服务层
+  * @author: Arno
+  * @date: 2017年3月29日 下午4:52:41
+  * @version: 1.0
+  */
+
+@Service("sysLineServiceImpl")
+public class SysLineServiceImpl implements SysLineService {
+
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDDHHmmss");
+	
+	@Autowired
+	private SysLineDao sysLineDao;
+
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.business.service.SysLineService#findPage(com.lpp.mq.core.vo.QueryPage)
+	 */
+	@Override
+	public PageData<SysLine> findPage(QueryPage queryPage) {
+		return sysLineDao.findPage(queryPage);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.business.service.SysLineService#deleteByPK(java.util.Collection)
+	 */
+	@Override
+	public void deleteByPK(Collection<?> ids) {
+		sysLineDao.deleteByPK(ids);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.business.service.SysLineService#saveSysLine(com.lpp.mq.business.entity.SysLine)
+	 */
+	@Override
+	public void saveSysLine(SysLine sysline) {
+		SysLine find = sysLineDao.findByStartAndEnd(sysline.getStartCode(), sysline.getEndCode());
+		if(null != find){
+			throw new BusinessException("线路已存在"); 
+		}
+		new SimpleDateFormat("YYYYMMDDHHmmss").format(new Date());
+		String linecode= "LN"+sdf.format(new Date());
+		sysline.setLineCode(linecode);
+		sysline.setCreateTime(new Date());
+		sysLineDao.saveSysLine(sysline);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.business.service.SysLineService#updateSysLine(com.lpp.mq.business.entity.SysLine)
+	 */
+	@Override
+	public void updateSysLine(SysLine sysline) {
+		SysLine find = sysLineDao.findByStartAndEnd(sysline.getStartCode(), sysline.getEndCode());
+		if(null != find && !find.getId().toString().equals(sysline.getId().toString())){
+			throw new BusinessException("线路已存在"); 
+		}
+		SysLine update = sysLineDao.findByPK(sysline.getId());
+		update.setStartName(sysline.getStartName());
+		update.setStartCode(sysline.getStartCode());
+		update.setEndName(sysline.getEndName());
+		update.setEndCode(sysline.getEndCode());
+		update.setUsesHours(sysline.getUsesHours());
+		update.setDepartTime(sysline.getDepartTime());
+		update.setRemark(sysline.getRemark());
+		
+		sysLineDao.updateSysLine(update);
+	}
+	
+	@Override
+	public SysLine findByPK(Long pk){
+		return sysLineDao.findByPK(pk);
+	}
+}

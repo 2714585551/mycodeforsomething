@@ -1,0 +1,40 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.dao;
+
+import java.util.Collection;
+
+import com.lpp.mq.business.entity.SysLine;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: SysLineDao
+  * @FullClassPath: com.lpp.mq.business.dao.SysLineDao
+  * @Description: 线路管理数据层
+  * @author: Arno
+  * @date: 2017年3月29日 下午4:50:49
+  * @version: 1.0
+  */
+
+public interface SysLineDao {
+
+	/** 
+	* @Title: findPage 
+	* @Description: 分页查询 
+	* @createDate: 2017年3月29日 下午5:00:54
+	* @param queryPage
+	* @return PageData<SysLine>
+	*/ 
+	PageData<SysLine> findPage(QueryPage queryPage);
+
+	/** 
+	* @Title: deleteByPK 
+	* @Description: 根据主键删除数据 
+	* @createDate: 2017年3月29日 下午6:38:14
+	* @param ids 
+	*/ 
+	void deleteByPK(Collection<?> ids);
+
+}

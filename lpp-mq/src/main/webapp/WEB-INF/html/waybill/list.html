@@ -1,0 +1,332 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script language="javascript" type="text/javascript" src="../js/jquery/jquery-2.0.3.min.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/miniui/miniui.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+	<script language="javascript" type="text/javascript" src="../js/myJs/queryPage.js"></script>
+    
+    <style type="text/css">
+        .New_Button, .Edit_Button, .Delete_Button, .Update_Button, .Cancel_Button
+        {
+            font-size:11px;color:#1B3F91;font-family:Verdana;  
+            margin-right:5px;          
+        }
+       
+                
+    </style>        
+</head>
+<body>
+    <h1>运单信息</h1>
+    <div style="padding-bottom: 15px;">
+		<input width="200" id="waybillNo" emptyText="运单编码" class="mini-textbox" />
+		<a class="mini-button" plain="true" onclick="search()" iconcls="icon-search">搜索</a> 
+		<a class="mini-button" plain="true" onclick="clear()" iconcls="icon-cancel">清空</a>
+	</div>      
+	<div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;">
+					<a class="mini-button" plain="true" iconcls="icon-add" onclick="wayBillAdd()">新增</a> <span class="separator"></span> 
+					<a class="mini-button" plain="true" iconCls="icon-edit" onclick="wayBillEdit()">编辑</a><span class="separator"></span> 
+					<a class="mini-button" plain="true" iconcls="icon-remove" onclick="wayBillDelete()">删除</a><span class="separator"></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<input id="btnEdit1" name="waybillId" class="mini-hidden"/>
+	  
+    <div id="waybill_grid" class="mini-datagrid" 
+        url="../wayBill/querylist"  idField="id" onselectionchanged="onSelectionChanged" selectOnLoad="true" multiSelect="false">
+        <div property="columns"> 
+        	<div type="checkcolumn" header="选择" width="30" align="center" headerAlign="center"></div>           
+            <div field="waybillNo" width="150" headerAlign="center" >运单编码</div>                                        
+            <div field="sendRegion" width="120" headerAlign="left" >发站</div>  
+            <div field="arriveRegion" width="120" headerAlign="left" >到站</div>  
+            <div field="consignorName" width="120" headerAlign="left" >发件人</div>  
+            <div field="consignorPhone" width="120" headerAlign="left" >发件人固定电话</div>  
+			<div field="fromFullAddress" width="120" headerAlign="left" >发件人详细地址</div>
+			<div field="consigneeName" width="120" headerAlign="left" >收件人</div>  
+            <div field="consigneePhone" width="120" headerAlign="left" >收件人固定电话</div>  
+			<div field="toFullAddress" width="120" headerAlign="left" >收件人详细地址</div>  
+			<div field="createTime" width="120"  dataType="date" dateFormat="yyyy-MM-dd HH:mm:ss" >创建时间</div>     
+			<div field="createOperator" width="120" headerAlign="left" >创建人</div>
+			<div field="ifLoad" width="120" headerAlign="left" renderer="loadText">是否装车</div>   
+        </div>
+    </div> 
+  
+    <br />
+    <div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;">
+					<a class="mini-button" plain="true" iconcls="icon-add" onclick="onButtonEdit()">装货</a> <span class="separator"></span> 
+					<a class="mini-button" plain="true" iconcls="icon-remove" onclick="wayBillDetailDelete()">删除</a><span class="separator"></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+    <div id="loaded_grid" class="mini-datagrid"  url="../wayBill/queryDetaillist" multiSelect="true">
+        <div property="columns">            
+            	<div type="checkcolumn" header="选择" width="30" align="center" headerAlign="center"></div>
+				<div header="货物编码" field="goodsCode" width="100"></div>
+				<div header="货物名称" field="goodsName" width="100"></div>
+				<div header="货物类型 " field="goodsType" width="100" renderer="goodsTypeRender"></div>
+				<div header="货物件数" field="goodsCount" width="100" ></div>
+				<div header="货物重量" field="goodsWeight" width="100"></div>
+				<div header="货物体积" field="goodsVolumn" width="100"></div> 
+				<div header="运费" field="costFreight" width="100" ></div> 
+				<div header="保价" field="goodsInsured" width="100"  ></div>
+				<div header="仓库" field="goodsWarehouse" width="100"></div> 
+				<div header="仓位" field="goodsPosition" width="100"></div>                
+        </div>
+    </div>      
+   
+    
+
+    <script type="text/javascript">
+        mini.parse();
+
+        var waybill_grid = mini.get("waybill_grid");
+        var loaded_grid = mini.get("loaded_grid");
+
+        waybill_grid.load();
+
+        function onSelectionChanged(e) {
+            var grid = e.sender;
+            var record = grid.getSelected();
+            if (record) {
+            	mini.get('btnEdit1').setValue(record.id);
+            	loaded_grid.load({ wayBill_id: record.id });
+            }
+        }
+
+        
+        jQuery(document).keypress(function(e) {
+			if (e.which == 13)
+				search();
+		});
+        
+        function clear(){
+			mini.get("waybillNo").setValue();
+			search();
+		}
+
+		function search() {
+			var paramVo = new QueryParamVo();
+			var waybillNo = mini.get("waybillNo").getValue();
+			if (waybillNo != null && waybillNo != '') {
+				paramVo.addParam(new QueryParam("waybillNo", waybillNo, '='));
+			}
+			waybill_grid.load({
+				'params' : mini.encode(paramVo)
+			});
+		}
+		search();
+        
+		function wayBillAdd() {
+			mini.open({
+				url : "../wayBill/edit",
+				title : "新增运单",
+				width : 750,
+				height : 680,
+				allowResize: false,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "new"
+					};
+					iframe.contentWindow.SetData(data);
+				},
+				ondestroy : function(action) {
+					waybill_grid.reload();
+				}
+			});
+		}
+
+		function wayBillEdit() {
+			var rows = waybill_grid.getSelecteds();
+			if (rows.length == 0) {
+				mini.alert('请选中要修改的数据！');
+				return;
+			}
+
+			if (rows.length > 1) {
+				alert("请选中一条记录");
+				return;
+			}
+			
+			
+			if(rows[0].ifLoad == 2){
+				mini.alert('运单已装车不能删除！');
+				return;
+			}
+			
+			mini.open({
+				url : "../wayBill/edit",
+				title : "编辑运单",
+				width : 900,
+				height : 850,
+				allowResize: false,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "edit",
+						id : rows[0].id
+					};
+					iframe.contentWindow.SetData(data);
+
+				},
+				ondestroy : function(action) {
+					waybill_grid.reload();
+
+				}
+			});
+		}
+
+		function wayBillDelete(e) {
+			var rows = waybill_grid.getSelecteds();
+			if (rows.length == 0) {
+				mini.alert('请选中要删除的记录！');
+				return;
+			}
+			if (!confirm('您确定要删除吗？'))
+				return;
+
+			if(rows[0].ifLoad == 2){
+				mini.alert('运单已装车不能删除！');
+				return;
+			}
+			
+			var ids = new Array();
+			$.each(rows, function(i, n) {
+				ids.push(n.id);
+			});
+
+			jQuery.ajax({
+				url : '../wayBill/delete',
+				async : true,
+				cache : false,
+				type : 'post',
+				data : {
+					ids : ids.join()
+				},
+				success : function(result) {
+					if (result.success) {
+						mini.alert(result.msg);
+						waybill_grid.reload();
+						loaded_grid.reload();
+					}
+				},
+				error : function() {
+					mini.alert("遇到异常，请重新删除!");
+				}
+			});
+		}
+		
+		
+		function wayBillDetailDelete(e){
+			var rows = loaded_grid.getSelecteds();
+			if (rows.length == 0) {
+				mini.alert('请选中要删除的记录！');
+				return;
+			}
+			if (!confirm('您确定要删除吗？'))
+				return;
+			
+			
+			var rows2 = waybill_grid.getSelecteds();
+			if(rows2[0].ifLoad == 2){
+				mini.alert('运单已装车不能删除！');
+				return;
+			}
+
+			var ids = new Array();
+			$.each(rows, function(i, n) {
+				ids.push(n.id);
+			});
+
+			jQuery.ajax({
+				url : '../wayBill/deleteDetail',
+				async : true,
+				cache : false,
+				type : 'post',
+				data : {
+					ids : ids.join()
+				},
+				success : function(result) {
+					if (result.success) {
+						mini.alert(result.msg);
+						loaded_grid.reload();
+					}
+				},
+				error : function() {
+					mini.alert("遇到异常，请重新删除!");
+				}
+			});
+		}
+		
+		function onButtonEdit(e) {
+            var btnEdit = this;
+            mini.open({
+                url: "../goods/poplist",
+                title: "选择货物",
+                width: 1000,
+                height: 500,
+                ondestroy: function (action) {
+                    //if (action == "close") return false;
+                    if (action == "ok") {
+                        var iframe = this.getIFrameEl();
+                        var data = iframe.contentWindow.GetData();
+                        data = mini.clone(data);    //必须
+                        if (data) {
+                            var goodsId = data.id;
+                            var waybillId = mini.get('btnEdit1').getValue();
+                            var obj = new Object;
+                            obj.goodsId = goodsId;
+                            obj.waybillId = waybillId;
+                            jQuery.ajax({
+                				url : '../wayBill/loadDetail',
+                				async : true,
+                				cache : false,
+                				type : 'post',
+                				data : {
+                					data : mini.encode(obj)
+                				},
+                				success : function(result) {
+                					if (result.success) {
+                						mini.alert(result.msg);
+                						loaded_grid.reload();
+                					}
+                				},
+                				error : function() {
+                					mini.alert("遇到异常，请重新删除!");
+                				}
+                			});
+                        }
+                    }
+
+                }
+            });
+        }
+		
+		
+		function loadText(e){
+			if(e.value == '1' ){
+				return "否";
+			}
+			return "是";
+		}
+		
+		function goodsTypeRender(e) {
+			debugger ;
+            if (e.value == 1) return "大件";
+            else return "小件";
+        }
+		
+    </script>
+</body>
+</html>

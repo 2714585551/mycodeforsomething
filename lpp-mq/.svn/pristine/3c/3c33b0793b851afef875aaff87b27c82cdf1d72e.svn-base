@@ -1,0 +1,12 @@
+package com.lpp.mq.business.dao;
+
+import java.util.List;
+
+import com.lpp.mq.business.entity.Teacher;
+
+public interface TeacherDao {
+
+	public List<Teacher> getTeacherList();
+	
+	public Teacher getTeacherByID(Long id);
+}

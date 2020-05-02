@@ -1,0 +1,50 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.dao.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.lpp.mq.business.dao.SysUserDao;
+import com.lpp.mq.business.entity.SysUser;
+import com.lpp.mq.core.dao.imp.BaseDaoImpl;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: SysUserDaoImpl
+  * @FullClassPath: com.lpp.mq.business.dao.impl.SysUserDaoImpl
+  * @Description: 系统用户信息实现
+  * @author: 李柯君
+  * @date: 2017年3月23日 下午6:46:55
+  * @version: 1.0
+  */
+@Repository
+public class SysUserDaoImpl extends BaseDaoImpl<SysUser, Long> implements SysUserDao {
+
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.business.dao.SysUserDao#getAll()
+	 */
+	@Override
+	public List<SysUser> getAll() {
+		return super.findAll();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.business.dao.SysUserDao#saveUser()
+	 */
+	@Override
+	public void saveUser(SysUser sysuser) {
+		super.save(sysuser);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.core.dao.imp.BaseDaoImpl#findPage(com.lpp.mq.core.vo.QueryPage)
+	 */
+	@Override
+	public PageData<SysUser> findPage(QueryPage queryPage) {
+		return super.findPage(queryPage);
+	}
+}

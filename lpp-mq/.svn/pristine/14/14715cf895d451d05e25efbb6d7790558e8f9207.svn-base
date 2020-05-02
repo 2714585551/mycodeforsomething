@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<title></title>
+<script language="javascript" type="text/javascript"
+	src="../js/jquery/jquery-2.0.3.min.js"></script>
+<script language="javascript" type="text/javascript"
+	src="../js/miniui/miniui.js"></script>
+<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+<script language="javascript" type="text/javascript"
+	src="../js/myJs/queryPage.js"></script>
+
+</head>
+
+<body>
+
+	<div style="padding-bottom: 15px;">
+		<input width="200" id="departCode" emptyText="车序号" class="mini-textbox"  />
+		<input width="200" id="startName" emptyText="起点" class="mini-textbox"  />
+		<input width="200" id="endName" emptyText="终点" class="mini-textbox" /> 
+		<a class="mini-button" plain="true" onclick="search()" iconcls="icon-search">搜索</a> 
+		<a class="mini-button" plain="true" onclick="clear()" iconcls="icon-cancel">清空</a>
+	</div>
+
+
+	<div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;">
+					<a class="mini-button" plain="true" iconcls="icon-add" onclick="departAdd()">新增</a> <span class="separator"></span> 
+					<a class="mini-button" plain="true" iconCls="icon-edit" onclick="departEdit()">编辑</a><span class="separator"></span> 
+					<a class="mini-button" plain="true" iconcls="icon-remove" onclick="departDelete()">删除</a> <span class="separator"></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div>
+		<div id="depart_list" class="mini-datagrid" url="../depart/query"
+			idField="id" totalField="total" dataField="data" showPageInfo="true"
+			pageSizeField="pageSize" pageIndexField="pageIndex" pageSize="10"
+			showPager="true" sizeList="[ 10,20,30,50]" pageSize="10" onselectionchanged="onSelectionChanged" 
+            selectOnLoad="true" multiSelect="false">
+           
+			<div property="columns">
+				<div type="checkcolumn" header="选择" width="30" align="center"
+					headerAlign="center"></div>
+				<div header="车序号" field="departCode" width="100"></div>
+				<div header="发车状态" field="isdepart" width="100" renderer="isdepartRender"></div>
+				<div header="总费用" field="totalFreight" width="100"></div>
+				<div header="预计到达时间" field="arriveTime" width="100" dataType="date" dateFormat="yyyy-MM-dd HH:mm:ss"></div>
+				
+				<div header="起点" field="startName" width="100"></div>
+				<div header="终点" field="endName" width="100"></div>
+				<div header="起点编码" name="startCode" field="startCode" width="100"></div>
+				<div header="终点编码"  name="endCode" field="endCode" width="100"></div>
+				<div header="发车时间" field="departTime" width="100" ></div>
+				<div header="运输时长" field="usesHours" width="100"></div>
+				
+				<div header="司机" field="driverName" width="100"></div>
+				<div header="联系电话" field="mobilePhone" width="100"></div>
+				<div header="身份证" field="personCard" width="100" ></div>
+				 
+			</div>
+		</div>
+	</div>
+	
+	<br />
+	<HR style="FILTER: alpha(opacity=100,finishopacity=0,style=1)" width="100%" color=#987cb9 SIZE=3>
+	<div>装车明细列表</div>
+	<div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;">
+					<a class="mini-button" plain="true" iconcls="icon-add" onclick="departRefAdd()">装车</a> <span class="separator"></span> 
+					<a class="mini-button" plain="true" iconcls="icon-remove" onclick="departRefDelete()">删除</a> <span class="separator"></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+    <div id="depart_ref_list" class="mini-datagrid" idField="id" totalField="total" dataField="data" showPageInfo="true"
+			pageSizeField="pageSize" pageIndexField="pageIndex" pageSize="10"
+			showPager="true" sizeList="[ 10,20,30,50]" pageSize="10" url="../depart/queryDetail"  multiSelect="true">
+        <div property="columns">            
+            <div  header="运单号" field="waybillNo" width="100"></div>
+            <div  header="发站" field="sendRegion" width="100"></div> 
+            <div  header="发件人" field=consignorName width="100" ></div> 
+            <div  header="发件人电话" field="consignorPhone" width="100"></div>                 
+            <div  header="到站" field="arriveRegion" width="100"></div>             
+            <div  header="收件人" field="consigneeName" width="100"></div>                                     
+            <div  header="收件人电话" field="consigneePhone" width="100"></div>                
+        </div>
+    </div>  
+    
+    
+	<script type='text/javascript'>
+	var isdepart = [{ id: 1, text: '待发车' }, { id: 2, text: '已发车'}];
+	
+		jQuery(document).keypress(function(e) {
+			if (e.which == 13)
+				search();
+		});
+		mini.parse();
+		var depart_grid = mini.get('depart_list');
+		
+		var depart_ref_grid = mini.get("depart_ref_list");
+		
+		
+		function clear(){
+			mini.get("departCode").setValue();
+			mini.get("startName").setValue();
+			mini.get("endName").setValue();
+			search();
+		}
+
+		function search() {
+			var paramVo = new QueryParamVo();
+		 	var departCode = mini.get("departCode").getValue();
+			var startName = mini.get("startName").getValue();
+			var endName = mini.get("endName").getValue();
+			if (departCode != null && departCode != '') {
+				paramVo.addParam(new QueryParam("departCode", departCode, 'like'));
+			}
+			if (startName != null && startName != '') {
+				paramVo.addParam(new QueryParam("startName", startName, 'like'));
+			}  
+			if (endName != null && endName != '') {
+				paramVo.addParam(new QueryParam("endName", endName, 'like'));
+			}  
+			
+			depart_grid.load({
+				'params' : mini.encode(paramVo)
+			});
+			this.hideColumn();
+		}
+		
+		search();
+
+		function departAdd() {
+			mini.open({
+				url : "../depart/edit",
+				title : "新增车次",
+				width : 830,
+				height : 630,
+				allowResize: false,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "new"
+					};
+					iframe.contentWindow.SetData(data);
+				},
+				ondestroy : function(action) {
+					depart_grid.reload();
+				}
+			});
+		}
+
+		function departEdit() {
+			var rows = depart_grid.getSelecteds();
+			if (rows.length == 0) {
+				mini.alert('请选中要修改的数据！');
+				return;
+			}
+
+			if (rows.length > 1) {
+				mini.alert("请选中一条记录");
+				return;
+			}
+
+			if(rows[0].isdepart == '2'){
+				mini.alert("已发车,不能修改");
+				return ;
+			}
+			
+			mini.open({
+				url : "../depart/edit",
+				title : "编辑车次",
+				width : 830,
+				height : 630,
+				allowResize: false,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "edit",
+						id : rows[0].id
+					};
+					iframe.contentWindow.SetData(data);
+
+				},
+				ondestroy : function(action) {
+					depart_grid.reload();
+
+				}
+			});
+		}
+
+		function departDelete(e) {
+			var rows = grid.getSelecteds();
+			if (rows == null) {
+				mini.alert('请选中要删除的记录！');
+				return;
+			}
+			if (!confirm('您确定要删除吗？'))
+				return;
+
+			var ids = new Array();
+			$.each(rows, function(i, n) {
+				ids.push(n.id);
+			});
+
+			jQuery.ajax({
+				url : '../depart/delete',
+				async : true,
+				cache : false,
+				type : 'post',
+				data : {
+					ids : ids.join(",")
+				},
+				success : function(result) {
+					if (result.success) {
+						mini.alert(result.msg);
+						depart_grid.reload();
+					}
+				},
+				error : function() {
+					mini.alert("遇到异常，请重新删除!");
+				}
+			});
+		}
+		
+		function hideColumn() {        
+			depart_grid.hideColumn("startCode");
+			depart_grid.hideColumn("endCode");
+        }
+		
+		/**************************************************************/
+		 function onSelectionChanged(e) {
+            var grid = e.sender;
+            var record = grid.getSelected();
+            if (record) {
+            	var paramVo = new QueryParamVo();
+            	paramVo.addParam(new QueryParam("departId", record.id, '=','Long'));
+            	depart_ref_grid.load({ 
+            		 'params': mini.encode(paramVo)
+           			 });
+            }
+        }
+		
+		
+		function departRefAdd(){
+			var rows = depart_grid.getSelecteds();
+			if (rows.length == 0) {
+				mini.alert('请选择车次！');
+				return;
+			}
+			
+			mini.open({
+				url : "../wayBill/load",
+				title : "装车",
+				width : 1000,
+				height : 500,
+				allowResize: true,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "load",
+						id : rows[0].id,
+						startCode : rows[0].startCode,
+						endCode : rows[0].endCode
+					};
+					iframe.contentWindow.SetData(data);
+
+				},
+				ondestroy : function(action) {
+					depart_grid.reload();
+
+				}
+			});
+		}
+		
+		function isdepartRender(e) {
+		 for (var i = 0, l = isdepart.length; i < l; i++) {
+                var g = isdepart[i];
+                if (g.id == e.value) return g.text;
+            }
+            return isdepart[0].text;
+       }
+		
+	</script>
+</body>
+</html>

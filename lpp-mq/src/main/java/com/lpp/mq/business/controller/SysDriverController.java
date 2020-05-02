@@ -1,0 +1,179 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.jms.JMSException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.lpp.mq.business.entity.SysDriver;
+import com.lpp.mq.business.service.SysDriverService;
+import com.lpp.mq.business.util.ParamUtil;
+import com.lpp.mq.core.contants.SymbolConstats;
+import com.lpp.mq.core.utils.JsonUtils;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+import com.lpp.mq.core.vo.ResponseMessage;
+
+/**
+  * @ClassName: SysDriverController
+  * @FullClassPath: com.lpp.mq.business.controller.SysDriverController
+  * @Description: 司机管理
+  * @author: Apple
+  * @date: 2017年3月24日 下午1:34:26
+  * @version: 1.0
+  */
+@Controller
+@RequestMapping("/driver")
+public class SysDriverController {
+	
+	@Autowired
+	private SysDriverService sysDriverService;
+	
+
+	@RequestMapping(value = "/list")
+	public String list(HttpServletRequest request, HttpServletResponse response, Model model) throws JMSException {
+		return "driver/list";
+	}
+
+	
+	@RequestMapping(value = "/querylist")
+	@ResponseBody
+	public Map<String, Object> querylist(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<>();
+		QueryPage queryPage = ParamUtil.buildQueryParams(request);
+		PageData<SysDriver> findPage = sysDriverService.findPage(queryPage);
+		result.put("total", findPage.getTotalCount());
+		result.put("data", findPage.getContent());
+		return result;
+	}
+	
+	@RequestMapping("/edit")
+	public String edit(final HttpServletRequest request, final HttpServletResponse response) {
+		return "driver/driverEdit";
+	}
+
+	
+	@RequestMapping("/get")
+	@ResponseBody
+	public ResponseEntity<?> get(final HttpServletRequest request, final HttpServletResponse response) {
+		String id = request.getParameter("id");
+		SysDriver sysDriver = sysDriverService.findByPK(Long.valueOf(id));
+		return new ResponseEntity<>(sysDriver, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping("/save")
+	@ResponseBody
+	public ResponseEntity<?> save(final HttpServletRequest request) {
+		String name = request.getParameter("data");
+		SysDriver sysDriver = JsonUtils.jsonToObject(name, SysDriver.class);
+		if(null == sysDriver.getId()){
+			sysDriverService.saveDriver(sysDriver);
+		}else{
+			sysDriverService.updateSysDriver(sysDriver);
+		}
+		ResponseMessage message = new ResponseMessage(true, "保存成功");
+		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping("/getDriverType")
+	@ResponseBody
+	public ResponseEntity<?> getDriverType(){
+		List<DriverType> list = new ArrayList<DriverType>();
+		
+		DriverType obj1 = new DriverType();
+		obj1.setId("1");
+		obj1.setText("A1");
+		list.add(obj1);
+		
+		DriverType obj2 = new DriverType();
+		obj2.setId("2");
+		obj2.setText("A2");
+		list.add(obj2);
+		
+		DriverType obj3 = new DriverType();
+		obj3.setId("3");
+		obj3.setText("B1");
+		list.add(obj3);
+		
+		DriverType obj4 = new DriverType();
+		obj4.setId("4");
+		obj4.setText("B2");
+		list.add(obj4);
+		
+		DriverType obj5 = new DriverType();
+		obj5.setId("5");
+		obj5.setText("C1");
+		list.add(obj5);
+		
+		DriverType obj6 = new DriverType();
+		obj6.setId("6");
+		obj6.setText("C2");
+		list.add(obj6);
+		
+		return new ResponseEntity<>(list, HttpStatus.OK);
+	}
+	
+	class DriverType{
+		String id;
+		String text;
+		public String getId() {
+			return id;
+		}
+		public void setId(String id) {
+			this.id = id;
+		}
+		public String getText() {
+			return text;
+		}
+		public void setText(String text) {
+			this.text = text;
+		}
+	}
+	
+	@RequestMapping("/delete")
+	@ResponseBody
+	public ResponseEntity<?> delete(final HttpServletRequest request, final HttpServletResponse response) {
+		String ids = request.getParameter("ids");
+		List<Long> list = new ArrayList<>();
+		if(StringUtils.isNoneBlank(ids)){
+			if(ids.contains(SymbolConstats.COMMA)){
+				String[] split = ids.split(SymbolConstats.COMMA);
+				for (String id : split) {
+					list.add(Long.valueOf(id));
+				}
+			}else{
+				list.add(Long.valueOf(ids));
+			}
+		}
+		sysDriverService.deleteByPK(list);
+		ResponseMessage message = new ResponseMessage(true, "删除成功");
+		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(value = "/filter")
+	@ResponseBody
+	public List<?> filterDriver(final HttpServletRequest request){
+		String condition = request.getParameter("key");
+		List<?> driverAll = sysDriverService.filterDriver(condition);
+		return driverAll;
+	}
+}

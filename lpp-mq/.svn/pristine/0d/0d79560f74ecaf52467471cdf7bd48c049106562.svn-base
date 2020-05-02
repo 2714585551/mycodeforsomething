@@ -1,0 +1,22 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.service;
+
+import com.lpp.mq.business.entity.SysWayBill;
+import com.lpp.mq.core.service.BaseService;
+
+/**
+  * @ClassName: SysWaybillService
+  * @FullClassPath: com.lpp.mq.business.service.SysWaybillService
+  * @Description: 运单的服务层.
+  * @author: Apple
+  * @date: 2017年3月31日 下午2:39:38
+  * @version: 1.0
+  */
+
+public interface SysWaybillService extends BaseService<SysWayBill,Long>{
+
+	void saveSysWayBill(SysWayBill sysWayBill);
+
+}

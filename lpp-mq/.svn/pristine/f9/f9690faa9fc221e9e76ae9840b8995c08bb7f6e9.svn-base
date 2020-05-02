@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<title></title>
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-2.0.3.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/miniui/miniui.js"></script>
+<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+<script language="javascript" type="text/javascript" src="../js/myJs/queryPage.js"></script>
+</head>
+<body>
+
+	<div style="padding-bottom: 15px;">
+		<input width="200" id="vehicleCode" emptyText="车牌号" class="mini-textbox" />
+		<input width="200" id="vehicleType" emptyText="车辆类型" class="mini-combobox" data='[{"id":"1","text":"合同车"},{"id":"2","text":"外雇车"}]'/> 
+		<a class="mini-button" plain="true" onclick="search()" iconcls="icon-search">搜索</a> 
+		<a class="mini-button" plain="true" onclick="clear()" iconcls="icon-cancel">清空</a>
+	</div>
+
+
+	<div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;">
+					<a class="mini-button" plain="true" iconcls="icon-add" onclick="vehicleAdd()">新增</a> <span class="separator"></span> 
+					<a class="mini-button" plain="true" iconCls="icon-edit" onclick="vehicleEdit()">编辑</a><span class="separator"></span> 
+					<a class="mini-button" plain="true" iconcls="icon-remove" onclick="vehicleDelete()">删除</a> <span
+					class="separator"></span>
+			</tr>
+		</table>
+	</div>
+	<div>
+		<div id="vehicle_list" class="mini-datagrid" url="../vehicle/querylist"
+			idField="id" totalField="total" dataField="data" showPageInfo="true"
+			pageSizeField="pageSize" pageIndexField="pageIndex" pageSize="10"
+			showPager="true" sizeList="[ 10,20,30,50]" pageSize="10"
+			multiSelect="true">
+			<div property="columns">
+				<div type="checkcolumn" header="选择" width="30" align="center" headerAlign="center"></div>
+				<div header="车牌号" field="vehicleCode" width="100"></div>
+				<div header="车辆类型" field="vehicleType" width="100" renderer="sexText"></div>
+				<div header="品牌型号" field="brandType" width="100"></div>
+				<div header="车身颜色" field="carColor" width="100"></div>
+				<div header="发动机号" field="engineNo" width="100"></div>
+				<div header="车架号" field="frameNumber" width="100"></div>
+				<div header="载重" field="carLoad" width="100"></div>
+				<div header="使用年限" field="useLimit" width="100"></div>
+				<div header="车辆所有者" field="carOwner" width="100"></div>
+				<div header="长宽高" field="lwh" width="100"></div>
+				<div header="购买时间" field="buyerTime" width="100" dateFormat="yyyy-MM-dd"></div>
+				<div header="出厂时间" field="produceTime" width="100" dateFormat="yyyy-MM-dd"></div>
+				<div header="注册时间" field="registerTime" width="100" dateFormat="yyyy-MM-dd"></div>
+				<div header="创建人" field="createUser" width="100"></div>
+			</div>
+		</div>
+	</div>
+	<script type='text/javascript'>
+		jQuery(document).keypress(function(e) {
+			if (e.which == 13)
+				search();
+		});
+		mini.parse();
+		var grid = mini.get('vehicle_list');
+		
+		grid.load();
+		
+		function clear(){
+			mini.get("vehicleCode").setValue();
+			mini.get("vehicleType").setValue();
+		}
+
+		function search() {
+			var paramVo = new QueryParamVo();
+			var vehicleCode = mini.get("vehicleCode").getValue();
+			var vehicleType = mini.get("vehicleType").getValue();
+			if (vehicleCode != null && vehicleCode != '') {
+				paramVo.addParam(new QueryParam("vehicleCode", vehicleCode, 'like'));
+			}
+			if (vehicleType != null && vehicleType != '') {
+				paramVo.addParam(new QueryParam("vehicleType", vehicleType, '='));
+			}
+			grid.load({
+				'params' : mini.encode(paramVo)
+			});
+		}
+		search();
+
+		function vehicleAdd() {
+			mini.open({
+				url : "../vehicle/edit",
+				title : "新增车辆",
+				width : 700,
+				height : 500,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "new"
+					};
+					iframe.contentWindow.SetData(data);
+				},
+				ondestroy : function(action) {
+					grid.reload();
+				}
+			});
+		}
+
+		function vehicleEdit() {
+			var rows = grid.getSelecteds();
+			if (rows.length == 0) {
+				mini.alert('请选中要修改的数据！');
+				return;
+			}
+
+			if (rows.length > 1) {
+				alert("请选中一条记录");
+				return;
+			}
+
+			mini.open({
+				url : "../vehicle/edit",
+				title : "编辑车辆",
+				width : 900,
+				height : 500,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "edit",
+						id : rows[0].id
+					};
+					iframe.contentWindow.SetData(data);
+
+				},
+				ondestroy : function(action) {
+					grid.reload();
+
+				}
+			});
+		}
+
+		function vehicleDelete(e) {
+			var rows = grid.getSelecteds();
+			if (rows == null) {
+				mini.alert('请选中要删除的记录！');
+				return;
+			}
+			if (!confirm('您确定要删除吗？'))
+				return;
+
+			var ids = new Array();
+			$.each(rows, function(i, n) {
+				ids.push(n.id);
+			});
+
+			jQuery.ajax({
+				url : '../vehicle/delete',
+				async : true,
+				cache : false,
+				type : 'post',
+				data : {
+					ids : ids.join()
+				},
+				success : function(result) {
+					if (result.success) {
+						mini.alert(result.msg);
+						grid.reload();
+					}
+				},
+				error : function() {
+					mini.alert("遇到异常，请重新删除!");
+				}
+			});
+		}
+		
+		function sexText(e){
+			if(e.value == '1' ){
+				return "合同车";
+			}
+			return "外雇车";
+		}
+	</script>
+</body>
+</html>

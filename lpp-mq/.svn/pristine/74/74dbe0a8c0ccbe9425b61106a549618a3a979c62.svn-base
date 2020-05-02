@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<title></title>
+<script language="javascript" type="text/javascript"
+	src="../js/jquery/jquery-2.0.3.min.js"></script>
+<script language="javascript" type="text/javascript"
+	src="../js/miniui/miniui.js"></script>
+<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+<script language="javascript" type="text/javascript"
+	src="../js/myJs/queryPage.js"></script>
+
+</head>
+
+<body>
+
+	<div style="padding-bottom: 15px;">
+		<input width="200" id=goodsCode emptyText="货物编码" class="mini-textbox"  />
+		<input width="200" id="goodsName" emptyText="货物名称" class="mini-textbox"  />
+		<input width="200" id="goodsPosition" emptyText="仓位" class="mini-textbox" /> 
+		<a class="mini-button" plain="true" onclick="search()" iconcls="icon-search">搜索</a> 
+		<a class="mini-button" plain="true" onclick="clear()" iconcls="icon-cancel">清空</a>
+	</div>
+
+	<div>
+		<div id="load_list" class="mini-datagrid" url="../goods/query"
+			idField="id" totalField="total" dataField="data" showPageInfo="true"
+			pageSizeField="pageSize" pageIndexField="pageIndex" pageSize="10"
+			showPager="true" sizeList="[ 10,20,30,50]" pageSize="10" onrowdblclick="onRowDblClick">
+			<div property="columns">
+				<div type="checkcolumn" header="选择" width="30" align="center"
+					headerAlign="center"></div>
+				<div header="货物编码" field="goodsCode" width="100"></div>
+				<div header="货物名称" field="goodsName" width="100"></div>
+				<div header="货物类型 " field="goodsType" width="100" renderer="goodsTypeRender"></div>
+				<div header="货物件数" field="goodsCount" width="100" ></div>
+				<div header="货物重量" field="goodsWeight" width="100"></div>
+				<div header="货物体积" field="goodsVolumn" width="100"></div> 
+				<div header="运费" field="costFreight" width="100" ></div> 
+				<div header="保价" field="goodsInsured" width="100"  ></div>
+				<div header="是否已装" field="isloaded" width="100" renderer="isLoaderRender"></div>  
+				<div header="仓库" field="goodsWarehouse" width="100"></div> 
+				<div header="仓位" field="goodsPosition" width="100"></div> 
+			</div>
+		</div>
+		<div class="mini-toolbar" style="text-align:center;padding-top:8px;padding-bottom:8px;" borderStyle="border:0;">
+        	<a class="mini-button" style="width:60px;" onclick="onOk()">确定</a><span style="display:inline-block;width:25px;"></span>
+        	<a class="mini-button" style="width:60px;" onclick="onCancel()">取消</a>
+    </div>
+	</div>
+	<script type='text/javascript'>
+		jQuery(document).keypress(function(e) {
+			if (e.which == 13)
+				search();
+		});
+		mini.parse();
+		var grid = mini.get('load_list');
+		
+		function clear(){
+			mini.get("goodsCode").setValue();
+			mini.get("goodsName").setValue();
+			mini.get("goodsPosition").setValue();
+			
+			search();
+		}
+
+		function search() {
+			var paramVo = new QueryParamVo();
+		  	var goodsCode = mini.get("goodsCode").getValue();
+			var goodsName = mini.get("goodsName").getValue();
+			var goodsPosition = mini.get("goodsPosition").getValue();
+			if (goodsCode != null && goodsCode != '') {
+				paramVo.addParam(new QueryParam("goodsCode", goodsCode, 'like'));
+			}
+			if (goodsName != null && goodsName != '') {
+				paramVo.addParam(new QueryParam("goodsName", goodsName, 'like'));
+			}  
+			if (goodsPosition != null && goodsPosition != '') {
+				paramVo.addParam(new QueryParam("goodsPosition", goodsPosition, 'like'));
+			}  
+			paramVo.addParam(new QueryParam("isloaded","1","="));
+			grid.load({
+				'params' : mini.encode(paramVo)
+			});
+		}
+		search();
+		
+		
+		function goodsTypeRender(e) {
+			debugger ;
+            if (e.value == 1) return "大件";
+            else return "小件";
+        }
+		
+		function isLoaderRender(e) {
+			debugger ;
+            if (e.value == 1) return "未装";
+            else return "已装";
+        }
+		
+		function GetData() {
+	        var row = grid.getSelected();
+	        return row;
+	    }
+		
+		function onRowDblClick(e) {
+	        onOk();
+	    }
+	    //////////////////////////////////
+	    function CloseWindow(action) {
+	        if (window.CloseOwnerWindow) return window.CloseOwnerWindow(action);
+	        else window.close();
+	    }
+
+	    function onOk() {
+	        CloseWindow("ok");
+	    }
+	    function onCancel() {
+	        CloseWindow("cancel");
+	    }
+		
+	</script>
+</body>
+</html>

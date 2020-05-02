@@ -1,0 +1,94 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.jms.JMSException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.lpp.mq.business.entity.SysDriver;
+import com.lpp.mq.business.entity.SysUser;
+import com.lpp.mq.business.service.SysDriverService;
+import com.lpp.mq.business.util.ParamUtil;
+import com.lpp.mq.core.enums.QuerySqlTypeEnum;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+import com.lpp.mq.core.vo.QueryParam;
+import com.lpp.mq.core.vo.ResponseMessage;
+
+/**
+  * @ClassName: SysDriverController
+  * @FullClassPath: com.lpp.mq.business.controller.SysDriverController
+  * @Description: 司机管理
+  * @author: Apple
+  * @date: 2017年3月24日 下午1:34:26
+  * @version: 1.0
+  */
+@Controller
+@RequestMapping("/driver")
+public class SysDriverController {
+	
+	@Autowired
+	private SysDriverService sysDriverService;
+	
+
+	@RequestMapping(value = "/list")
+	public String list(HttpServletRequest request, HttpServletResponse response, Model model) throws JMSException {
+		return "driver/list";
+	}
+
+	
+	@RequestMapping(value = "/querylist")
+	@ResponseBody
+	public Map<String, Object> querylist(HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<>();
+		QueryPage queryPage = ParamUtil.buildQueryParams(request);
+		List<QueryParam> params = queryPage.getParams();
+		
+		String driverName = request.getParameter("driverName");
+		if(StringUtils.isNoneBlank(driverName) ){
+			params.add(new QueryParam("driverName", QuerySqlTypeEnum.LIKE.getType(), driverName));
+		}
+		
+		String driverType =  request.getParameter("driverType");
+		if(StringUtils.isNoneBlank(driverType)){
+			params.add(new QueryParam("driverType",  driverType));
+		}
+		
+		PageData<SysDriver> findPage = sysDriverService.findPage(queryPage);
+		result.put("total", findPage.getTotalCount());
+		result.put("rows", findPage.getContent());
+		return result;
+	}
+	
+	@RequestMapping("/edit")
+	public String edit(final HttpServletRequest request, final HttpServletResponse response) {
+		return "driver/driverEdit";
+	}
+
+	@RequestMapping("/add")
+	@ResponseBody
+	public ResponseEntity<?> add(@ModelAttribute("userForm") final SysUser sysuser) {
+//		sysuser.setPwd("11111");
+//		sysuser.setCreatTime(new Date());
+//		sysUserService.saveUser(sysuser);
+		ResponseMessage message = new ResponseMessage(true, "保存成功");
+		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+	
+}

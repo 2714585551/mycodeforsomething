@@ -1,0 +1,17 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.dao;
+
+/**
+  * @ClassName: SysWayBillDetailDao
+  * @FullClassPath: com.lpp.mq.business.dao.SysWayBillDetailDao
+  * @Description: 运单明细数据层.
+  * @author: Apple
+  * @date: 2017年3月31日 下午2:30:39
+  * @version: 1.0
+  */
+
+public interface SysWayBillDetailDao {
+	
+}

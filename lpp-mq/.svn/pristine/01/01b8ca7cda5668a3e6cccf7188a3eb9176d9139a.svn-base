@@ -1,0 +1,127 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.jms.JMSException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.lpp.mq.business.entity.SysDepart;
+import com.lpp.mq.business.entity.SysDepartDetail;
+import com.lpp.mq.business.service.SysDepartDetailService;
+import com.lpp.mq.business.service.SysDepartService;
+import com.lpp.mq.business.util.ParamUtil;
+import com.lpp.mq.core.utils.JsonUtils;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+import com.lpp.mq.core.vo.ResponseMessage;
+
+/**
+  * @ClassName: SysDepartController
+  * @FullClassPath: com.lpp.mq.business.controller.SysDepartController
+  * @Description: 车次管理控制层
+  * @author: Arno
+  * @date: 2017年3月31日 下午3:38:59
+  * @version: 1.0
+  */
+@Controller
+@RequestMapping("/depart")
+public class SysDepartController {
+
+	@Autowired
+	private SysDepartService SysDepartService;
+	
+	@Autowired
+	private SysDepartDetailService sysDepartDetailService;
+	
+	
+	@RequestMapping(value = "/list")
+	public String list(HttpServletRequest request, HttpServletResponse response, Model model) throws JMSException {
+		return "depart/list";
+	}
+	
+	@RequestMapping("/edit")
+	public String edit(final HttpServletRequest request, final HttpServletResponse response) {
+		return "depart/editDepart";
+	}
+	
+	
+	@RequestMapping(value = "/query")
+	@ResponseBody
+	public Map<String, Object> querylist( HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<>();
+		QueryPage queryPage = ParamUtil.buildQueryParams(request);
+		PageData<SysDepart> findPage = SysDepartService.findPage(queryPage);
+		result.put("total", findPage.getTotalCount());
+		result.put("data", findPage.getContent());
+		return result;
+	}
+	
+	@RequestMapping("/save")
+	@ResponseBody
+	public ResponseEntity<?> save(final HttpServletRequest request, final HttpServletResponse response) {
+		String data = request.getParameter("data");
+		SysDepart sysDepart = JsonUtils.jsonToObject(data, SysDepart.class);
+		SysDepartService.saveSysDepart(sysDepart);
+		ResponseMessage message = new ResponseMessage(true, "保存成功");
+		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping("/get")
+	@ResponseBody
+	public ResponseEntity<?> get(final HttpServletRequest request, final HttpServletResponse response) {
+		String id = request.getParameter("id");
+		SysDepart sysDepart = SysDepartService.findByPk(Long.valueOf(id));
+		return new ResponseEntity<>(sysDepart, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/queryDetail")
+	@ResponseBody
+	public Map<String, Object> queryDetail( HttpServletRequest request, HttpServletResponse response) {
+		Map<String, Object> result = new HashMap<>();
+		QueryPage queryPage = ParamUtil.buildQueryParams(request);
+		PageData<SysDepartDetail> findPage = sysDepartDetailService.findPage(queryPage);
+		result.put("total", findPage.getTotalCount());
+		result.put("data", findPage.getContent());
+		return result;
+	}
+	
+	
+	@RequestMapping("/delete")
+	@ResponseBody
+	public ResponseEntity<?> delete(final HttpServletRequest request, final HttpServletResponse response) {
+		List<Long> list = ParamUtil.buildDeleteContidion(request);
+		SysDepartService.deleteByPK(list);
+		ResponseMessage message = new ResponseMessage(true, "删除成功");
+		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+	
+	@RequestMapping("/loadDetils")
+	@ResponseBody
+	public ResponseEntity<?> loadDetils(final HttpServletRequest request, final HttpServletResponse response) {
+		List<Long> waybills = ParamUtil.buildDeleteContidion(request);
+		String departID = request.getParameter("departId");
+		sysDepartDetailService.save(Long.valueOf(departID), waybills);
+		ResponseMessage message = new ResponseMessage(true, "装车成功");
+		return new ResponseEntity<>(message, HttpStatus.OK);
+	}
+	
+	
+	
+	
+	
+}

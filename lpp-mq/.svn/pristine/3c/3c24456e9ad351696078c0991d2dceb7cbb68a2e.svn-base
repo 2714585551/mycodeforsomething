@@ -1,0 +1,65 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.service;
+
+import java.util.Collection;
+
+import com.lpp.mq.business.entity.SysLine;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: SysLineService
+  * @FullClassPath: com.lpp.mq.business.service.SysLineService
+  * @Description: 线路管理服务层
+  * @author: Arno
+  * @date: 2017年3月29日 下午4:52:21
+  * @version: 1.0
+  */
+
+public interface SysLineService {
+
+	/** 
+	* @Title: findPage 
+	* @Description: 分页查询 
+	* @createDate: 2017年3月29日 下午5:00:13
+	* @param queryPage
+	* @return PageData<SysLine>
+	*/ 
+	PageData<SysLine> findPage(QueryPage queryPage);
+
+	/** 
+	* @Title: deleteByPK 
+	* @Description: 根据主键删除数据 
+	* @createDate: 2017年3月29日 下午6:37:23
+	* @param list 
+	*/ 
+	void deleteByPK(Collection<?> ids);
+
+	/** 
+	* @Title: saveSysLine 
+	* @Description: 保存线路 
+	* @createDate: 2017年3月30日 下午4:29:11
+	* @param sysline 
+	*/ 
+	void saveSysLine(SysLine sysline);
+
+	/** 
+	* @Title: updateSysLine 
+	* @Description: 更新线路 
+	* @createDate: 2017年3月30日 下午4:29:17
+	* @param sysline 
+	*/ 
+	void updateSysLine(SysLine sysline);
+
+	/** 
+	* @Title: findByPK 
+	* @Description: 根据主键获取数据 
+	* @createDate: 2017年3月30日 下午4:33:17
+	* @param pk
+	* @return SysLine
+	*/ 
+	SysLine findByPK(Long pk);
+
+}

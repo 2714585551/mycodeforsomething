@@ -1,0 +1,40 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.lpp.mq.business.dao.TeacherDao;
+import com.lpp.mq.business.entity.Teacher;
+import com.lpp.mq.business.service.TeacherSevice;
+
+/**
+  * @ClassName: TeacherSeviceImpl
+  * @FullClassPath: com.lpp.mq.service.impl.TeacherSeviceImpl
+  * @Description: TODO
+  * @author: Arno
+  * @date: 2017年3月6日 下午5:32:49
+  * @version: 1.0
+  */
+
+@Service
+public class TeacherSeviceImpl implements TeacherSevice {
+
+	@Autowired
+	private TeacherDao teacherDao ;
+	/* (non-Javadoc)
+	 * @see com.lpp.mq.service.TeacherSevice#getTeacherList()
+	 */
+	@Override
+	public List<Teacher> getTeacherList() {
+		return  teacherDao.getTeacherList();
+	}
+
+	public Teacher getTeacherByID(Long id) {
+		return teacherDao.getTeacherByID(id);
+	}
+}

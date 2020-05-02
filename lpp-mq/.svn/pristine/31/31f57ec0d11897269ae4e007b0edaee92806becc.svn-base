@@ -1,0 +1,40 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<html>
+  <head>
+  	<script type="text/javascript">
+		jQuery(function($){
+		
+		function addUser(){
+			var r = $('#userForm').form('validate');
+			if(!r) {
+				return false;
+			}
+			$.post("user/add",$("#userForm").serializeArray(),function(data){
+				if(data.success){
+					$.messager.alert('提示',data.msg,'info');
+					$('#MyPopWindow').window('close');
+					$('#userTable').datagrid('reload');  
+				}else{
+					
+				}
+			});
+		}
+		
+	</script>
+  </head>
+  
+  <body>
+  	<!-- 验证还是jquery-validation好用，这里省事没用 -->
+	<form id="userForm" method="post" style="margin: 10;text-align: center;">
+		<input type="hidden" name="id" id="uuid">
+		名字：<input name="name" style="width: 200" validType="length[3,30]" class="easyui-validatebox" required="true"> <br>
+		性别：<input name="sex" style="width: 200" class="easyui-validatebox" required="true"> <br>
+		年龄：<input class="easyui-numberspinner" name="age" min="1" max="120" increment="1" style="width:200px;"></input><br>
+		电话：<input name="telephone" style="width: 200" validType="length[8,11]" class="easyui-validatebox" required="true"><br>
+		备注：<input name="remark" style="width: 200"><br>
+		<br>
+		<a href="#" id="btn-back" onclick="closeWindow();" class="easyui-linkbutton" iconCls="icon-back">返回</a>
+		<a href="#" id="btn-add" onclick="addUser();" class="easyui-linkbutton" iconCls="icon-save">保存</a>
+	</form>
+  </body>
+</html>

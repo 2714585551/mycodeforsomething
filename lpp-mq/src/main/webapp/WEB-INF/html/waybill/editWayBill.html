@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+  <script language="javascript" type="text/javascript" src="../js/jquery/jquery-2.0.3.min.js"></script>
+  <script language="javascript" type="text/javascript" src="../js/miniui/miniui.js"></script>
+  <script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+  </head>
+  <body>
+  	<form id="wayBillForm" method="post" >
+		<input name="id" class="mini-hidden" />
+		<fieldset style="border: solid 1px #aaa; padding: 10px;">
+			<legend>基本信息</legend>
+			<div style="padding: 3px;">
+				<table cellspacing="5" cellpadding="5">
+					<tr>
+						<td>运单编号:</td>
+						<td colspan="3"><input name="waybillNo" style="width: 100%;" class="mini-textbox" emptyText="系统自动生成" readonly/></td>
+					</tr>
+					<tr>
+						<td>起点:</td>
+						<td >
+							<input id="startCode" name="sendRegionCode" style="width: 270px;"class="mini-autocomplete" url="../region/filterCity" valueField="cityCode" textField="cityName" required="true" onvaluechanged="onStartChanged" popupEmptyText="未查询到数据"/>
+							<input id="startName" name="sendRegion" style="width: 200px;" class="mini-hidden"/>
+						</td>
+						<td>终点:</td>
+						<td >
+							<input id="endCode" name="arriveRegionCode" style="width: 280px;" class="mini-autocomplete" url="../region/filterCity" valueField="cityCode" textField="cityName" required="true" onvaluechanged="onEndChanged" popupEmptyText="未查询到数据"/>
+							<input id="endName" name="arriveRegion" style="width: 200px;" class="mini-hidden"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</fieldset>
+		<fieldset style="border: solid 1px #aaa; padding: 10px;">
+			<legend>发件人信息</legend>
+			<div style="padding: 3px;">
+				<table cellspacing="5" cellpadding="5">
+					<tr>
+						<td>发件人：</td>
+						<td><input name="consignorName" class="mini-textbox" required="true" style="width: 260px;"/></td>
+						<td>电话：</td>
+						<td><input name="consignorPhone" class="mini-textbox" required="true" vtype="int;rangeLength:8,11" style="width: 270px;"/></td>
+					</tr>
+					<tr>
+						<td>地址:</td>
+						<td colspan="3">
+							<input id="consignorProvinceName"  name="consignorProvinceCode" emptyText='选择省' class="mini-combobox" url="../region/queryProvince"  valueField="provinceCode" textField="provinceName" onvaluechanged="onProvinceChanged" required="true" valueFromSelect="true" showRadioButton="false" popupWidth="180" expandOnLoad="1" style="width:200px;"/>	
+							<input id="consignorCityName" name="consignorCityCode" emptyText='选择市' class="mini-combobox" valueField="cityCode" textField="cityName"  onvaluechanged="onCityChanged"   required="true" valueFromSelect="true" showRadioButton="false" popupWidth="180" expandOnLoad="1" style="width:200px;"/>	
+							<input id="consignorAreaName" name="consignorAreaCode" emptyText='选择区' class="mini-combobox" valueField="districtCode" textField="districtName" required="true" valueFromSelect="true" showRadioButton="false" popupWidth="180" expandOnLoad="1" style="width:190px;"/>	
+						</td>
+					</tr>
+					<tr>
+						<td>详细地址：</td>
+						<td colspan="3"><input name="consignorDetailAddress" class="mini-textbox" style="width: 100%;" required="true"/></td>
+					</tr>
+				</table>
+			</div>
+		</fieldset>
+		<fieldset style="border: solid 1px #aaa; padding: 10px;">
+			<legend>收件人信息</legend>
+			<div style="padding: 3px;">
+				<table cellspacing="5" cellpadding="5">
+					<tr>
+						<td>收件人：</td>
+						<td><input name="consigneeName" class="mini-textbox" required="true" style="width: 260px;"/></td>
+						<td>电话：</td>
+						<td><input name="consigneePhone" class="mini-textbox" required="true" vtype="int;rangeLength:8,11" style="width: 270px;"/></td>
+					</tr>
+					<tr>
+						<td>地址:</td>
+						<td colspan="3">
+							<input id="consigneeProvinceName"  name="consigneeProvinceCode" emptyText='选择省' class="mini-combobox" url="../region/queryProvince"  valueField="provinceCode" textField="provinceName" onvaluechanged="onProvinceToChanged" required="true" valueFromSelect="true" showRadioButton="false" popupWidth="180" expandOnLoad="1" style="width:200px;"/>	
+							<input id="consigneeCityName" name="consigneeCityCode" emptyText='选择市' class="mini-combobox" valueField="cityCode" textField="cityName"  onvaluechanged="onCityToChanged"   required="true" valueFromSelect="true" showRadioButton="false" popupWidth="180" expandOnLoad="1" style="width:200px;"/>	
+							<input id="consigneeAreaName" name="consigneeAreaCode" emptyText='选择区' class="mini-combobox" valueField="districtCode" textField="districtName" required="true" valueFromSelect="true" showRadioButton="false" popupWidth="180" expandOnLoad="1" style="width:190px;"/>	
+						</td>
+					</tr>
+					<tr>
+						<td>详细地址：</td>
+						<td colspan="3"><input name="consigneeDetailAddress" class="mini-textbox" style="width: 100%;" required="true"/></td>
+					</tr>
+				</table>
+			</div>
+		</fieldset>
+		<div style="text-align: center; padding: 10px;">
+			<a class="mini-button" onclick="onOk" style="width: 60px; margin-right: 20px;">确定</a> 
+			<a class="mini-button" onclick="onCancel" style="width: 60px;">取消</a>
+		</div>
+	</form>
+  </body>
+</html>
+<script type="text/javascript">
+  	
+  	mini.parse();
+  	
+  	var form = new mini.Form("wayBillForm");
+  	/////// 发件人地址
+  	var consignorProvinceName = mini.get("consignorProvinceName");
+    var consignorCityName = mini.get("consignorCityName");
+	var consignorAreaName = mini.get("consignorAreaName");
+	
+  	function onProvinceChanged(e) {
+    	var selected_consignorProvinceName = consignorProvinceName.getValue();
+    	consignorProvinceName.setValue(selected_consignorProvinceName);
+    	consignorCityName.setValue("");
+    	consignorAreaName.setValue("");
+    	var url = "../region/queryCity?provinceCode=" + selected_consignorProvinceName;
+    	consignorCityName.setUrl(url);           
+	}
+
+	function onCityChanged(){
+		var selected_consignorCityName = consignorCityName.getValue();
+		consignorCityName.setValue(selected_consignorCityName);
+		consignorAreaName.setValue("");
+		var url = "../region/queryArea?cityCode=" + selected_consignorCityName;
+		consignorAreaName.setUrl(url);  
+	}
+	
+	/////// 收件人地址
+  	var consigneeProvinceName = mini.get("consigneeProvinceName");
+    var consigneeCityName = mini.get("consigneeCityName");
+	var consigneeAreaName = mini.get("consigneeAreaName");
+	
+  	function onProvinceToChanged(e) {
+    	var selected_consigneeProvinceName = consigneeProvinceName.getValue();
+    	consigneeProvinceName.setValue(selected_consigneeProvinceName);
+    	consigneeCityName.setValue("");
+    	consigneeAreaName.setValue("");
+    	var url = "../region/queryCity?provinceCode=" + selected_consigneeProvinceName;
+    	consigneeCityName.setUrl(url);           
+	}
+
+	function onCityToChanged(){
+		var selected_consigneeCityName = consigneeCityName.getValue();
+		consigneeCityName.setValue(selected_consigneeCityName);
+		consigneeAreaName.setValue("");
+		var url = "../region/queryArea?cityCode=" + selected_consigneeCityName;
+		consigneeAreaName.setUrl(url);  
+	}
+
+	function SaveData() {
+		form.validate();
+		if (form.isValid() == false) {
+			return;
+		}
+		var fromData = form.getData();
+		fromData.fromFullAddress = consignorProvinceName.getText() + consignorCityName.getText() + consignorAreaName.getText() + fromData.consignorDetailAddress;
+		fromData.toFullAddress = consigneeProvinceName.getText() + consigneeCityName.getText() + consigneeAreaName.getText() + fromData.consigneeDetailAddress;
+		var json = mini.encode(fromData);
+		$.ajax({
+			url : "../wayBill/save",
+			type : 'post',
+			data : {
+				data : json
+			},
+			cache : false,
+			success : function(res) {
+				if (res.success) {
+				    mini.alert(res.msg);
+					 setTimeout(function(){
+						 window.CloseOwnerWindow();
+				    },2000) ;
+				}else{
+					  mini.alert(res.msg);
+				}
+				
+			},
+			error : function(jqXHR, textStatus, errorThrown) {
+				 mini.alert("保存失败");
+			}
+		});
+	}
+
+	////////////////////
+	//标准方法接口定义
+	function SetData(data) {
+		if (data.action == "edit") {
+			//跨页面传递的数据对象，克隆后才可以安全使用
+			data = mini.clone(data);
+			$.ajax({
+				url : "../wayBill/get",
+				data : {
+					id : data.id
+				},
+				cache : false,
+				success : function(text) {
+					var o = mini.decode(text);
+					form.setData(o);
+					form.setChanged(false);
+					mini.get("startCode").setText(o.sendRegion) ;
+					mini.get("startName").setValue(o.sendRegion) ;
+					mini.get("endCode").setText(o.arriveRegion) ;
+					mini.get("endName").setValue(o.arriveRegion) ;
+					///发件人
+					consignorProvinceName.setValue(o.consignorProvinceCode);
+			      	if(o.consignorProvinceCode){
+			    	  var url = "../region/queryCity?provinceCode=" + o.consignorProvinceCode;
+			    	  consignorCityName.setUrl(url); 
+			    	  consignorCityName.setValue(o.consignorCityCode);
+			      	}
+			      	if(o.consignorCityCode){
+			    	  var url = "../region/queryArea?cityCode=" + o.consignorCityCode;
+			    	  consignorAreaName.setUrl(url); 
+			    	  consignorAreaName.setValue(o.consignorAreaCode);
+			      	}
+			     	 ///收件人
+					consigneeProvinceName.setValue(o.consigneeProvinceCode);
+			      	if(o.consigneeProvinceCode){
+			    	  var url = "../region/queryCity?provinceCode=" + o.consigneeProvinceCode;
+			    	  consigneeCityName.setUrl(url); 
+			    	  consigneeCityName.setValue(o.consigneeCityCode);
+			      	}
+			      	if(o.consigneeCityCode){
+			    	  var url = "../region/queryArea?cityCode=" + o.consigneeCityCode;
+			    	  consigneeAreaName.setUrl(url); 
+			    	  consigneeAreaName.setValue(o.consigneeAreaCode);
+			      	}
+				}
+			});
+		}
+	}
+	
+	function onStartChanged(e) {
+        var item = e.selected;
+        if (item) { 
+       	 mini.get("startName").setValue(item.cityName)   
+        }else{
+       	 mini.get("startName").setValue("") ;  
+       	 mini.get("startCode").setValue("")  ; 
+        }
+    }
+	 
+	 function onEndChanged(e) {
+        var item = e.selected;
+        if (item) { 
+       	 mini.get("endName").setValue(item.cityName)   
+        }else{
+       	 mini.get("endName").setValue("");
+       	 mini.get("endCode").setValue("") ; 
+        }
+    }
+	 
+	function CloseWindow(action) {
+		if (action == "close" && form.isChanged()) {
+			if (confirm("数据被修改了，是否先保存？")) {
+				return false;
+			}
+		}
+		if (window.CloseOwnerWindow)
+			return window.CloseOwnerWindow(action);
+		else
+			window.close();
+	}
+	function onOk(e) {
+		SaveData();
+	}
+	function onCancel(e) {
+		CloseWindow("cancel");
+	}
+  </script>

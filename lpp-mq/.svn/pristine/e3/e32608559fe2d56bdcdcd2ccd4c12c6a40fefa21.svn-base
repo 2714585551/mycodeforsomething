@@ -1,0 +1,25 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.dao.impl;
+
+import org.springframework.stereotype.Repository;
+
+import com.lpp.mq.business.dao.SysDepartDetailDao;
+import com.lpp.mq.business.entity.SysDepartDetail;
+import com.lpp.mq.core.dao.imp.BaseDaoImpl;
+
+/**
+  * @ClassName: SysDepartDetailDaoImpl
+  * @FullClassPath: com.lpp.mq.business.dao.impl.SysDepartDetailDaoImpl
+  * @Description: TODO
+  * @author: Arno
+  * @date: 2017年3月31日 下午8:27:21
+  * @version: 1.0
+  */
+
+@Repository
+public class SysDepartDetailDaoImpl extends BaseDaoImpl<SysDepartDetail, Long> implements SysDepartDetailDao {
+
+	
+}

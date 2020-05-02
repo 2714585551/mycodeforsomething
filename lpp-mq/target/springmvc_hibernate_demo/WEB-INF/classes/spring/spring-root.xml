@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	    http://www.springframework.org/schema/aop
+	    http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+	    http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-4.2.xsd
+	    http://www.springframework.org/schema/tx
+	    http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+
+	<context:component-scan base-package="com.lpp.mq.core.dao" />
+	<context:component-scan base-package="com.lpp.mq.core.service" />
+	<context:component-scan base-package="com.lpp.mq.business.dao" />
+	<context:component-scan base-package="com.lpp.mq.business.service" />
+	<context:component-scan base-package="com.lpp.mq.msgservice" />
+
+	<mvc:annotation-driven />
+
+	<!-- 引入properties文件 -->
+	<context:property-placeholder location="classpath:database.properties" />
+	<context:property-placeholder location="classpath:hbx.properties" />
+
+	<!-- 定义数据库连接池数据源bean destroy-method="close"的作用是当数据库连接不使用的时候,就把该连接重新放到数据池中,方便下次使用调用 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<!-- 设置JDBC驱动名称 -->
+		<property name="driverClass" value="${jdbc.driver}" />
+		<!-- 设置JDBC连接URL -->
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<!-- 设置数据库用户名 -->
+		<property name="user" value="${jdbc.username}" />
+		<!-- 设置数据库密码 -->
+		<property name="password" value="${jdbc.password}" />
+		<!-- 设置连接池初始值 -->
+		<property name="initialPoolSize" value="5" />
+	</bean>
+
+	<!-- 配置sessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<!-- 数据源 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- hibernate的相关属性配置 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.jdbc.batch_size">100</prop>
+			</props>
+		</property>
+		<!-- 自动扫描实体对象 tdxy.bean的包结构中存放实体类 -->
+		<property name="packagesToScan">
+			<list>
+				<value>com.lpp.mq.core.entity</value>
+				<value>com.lpp.mq.business.entity</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 配置事务容器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+	<!-- 定义事务规则 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="create*" propagation="REQUIRED" />
+			<tx:method name="insert*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="merge*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="remove*" propagation="REQUIRED" />
+			<tx:method name="put*" propagation="REQUIRED" />
+			<tx:method name="gen*" propagation="REQUIRED" />
+			<tx:method name="complete*" propagation="REQUIRED" />
+			<tx:method name="import*" propagation="REQUIRED" />
+			<tx:method name="open*" propagation="REQUIRED" />
+			<tx:method name="publish*" propagation="REQUIRED" />
+			<tx:method name="init*" propagation="REQUIRED" />
+
+			<tx:method name="change*" propagation="REQUIRED" />
+			<tx:method name="*" propagation="REQUIRED" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+	<!-- 定义事务入口 -->
+	<aop:config>
+		<aop:pointcut id="businessTxPointcut"
+			expression="execution(* com.lpp.mq.business.service.impl.*Impl.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="businessTxPointcut" />
+	</aop:config>
+	
+	<aop:config>
+		<aop:pointcut id="baseTxPointcut"
+			expression="execution(* com.lpp.mq.core.service.impl.*Impl.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="baseTxPointcut" />
+	</aop:config>
+
+</beans>

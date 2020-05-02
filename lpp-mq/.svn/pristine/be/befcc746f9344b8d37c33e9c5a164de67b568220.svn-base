@@ -1,0 +1,31 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.service;
+
+import com.lpp.mq.business.entity.SysDriver;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: SysDriverService
+  * @FullClassPath: com.lpp.mq.business.service.SysDriverService
+  * @Description: 司机的接口.
+  * @author: Apple
+  * @date: 2017年3月24日 下午1:51:50
+  * @version: 1.0
+  */
+
+public interface SysDriverService {
+
+	
+	/** 
+	* @Title: findPage 
+	* @Description: 分页查询. 
+	* @createDate: 2017年3月24日 下午1:52:46
+	* @param queryPage
+	* @return 
+	*/ 
+	PageData<SysDriver> findPage(QueryPage queryPage);
+	
+}

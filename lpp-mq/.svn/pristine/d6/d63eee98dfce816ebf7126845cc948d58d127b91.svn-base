@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<title></title>
+<script language="javascript" type="text/javascript"
+	src="../js/jquery/jquery-2.0.3.min.js"></script>
+<script language="javascript" type="text/javascript"
+	src="../js/miniui/miniui.js"></script>
+<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+<script language="javascript" type="text/javascript"
+	src="../js/myJs/queryPage.js"></script>
+
+</head>
+
+<body>
+
+	<div style="padding-bottom: 15px;">
+		<input width="200" id=goodsCode emptyText="货物编码" class="mini-textbox"  />
+		<input width="200" id="goodsName" emptyText="货物名称" class="mini-textbox"  />
+		<input width="200" id="goodsPosition" emptyText="仓位" class="mini-textbox" /> 
+		<a class="mini-button" plain="true" onclick="search()" iconcls="icon-search">搜索</a> 
+		<a class="mini-button" plain="true" onclick="clear()" iconcls="icon-cancel">清空</a>
+	</div>
+
+
+	<div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;">
+					<a class="mini-button" plain="true" iconcls="icon-add" onclick="goodsAdd()">新增</a> <span class="separator"></span> 
+					<a class="mini-button" plain="true" iconCls="icon-edit" onclick="goodsEdit()">编辑</a><span class="separator"></span> 
+					<a class="mini-button" plain="true" iconcls="icon-remove" onclick="goodsDelete()">删除</a> <span class="separator"></span>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div>
+		<div id="goods_list" class="mini-datagrid" url="../goods/query"
+			idField="id" totalField="total" dataField="data" showPageInfo="true"
+			pageSizeField="pageSize" pageIndexField="pageIndex" pageSize="10"
+			showPager="true" sizeList="[ 10,20,30,50]" pageSize="10"
+			multiSelect="true">
+			<div property="columns">
+				<div type="checkcolumn" header="选择" width="30" align="center"
+					headerAlign="center"></div>
+				<div header="货物编码" field="goodsCode" width="100"></div>
+				<div header="货物名称" field="goodsName" width="100"></div>
+				<div header="货物类型 " field="goodsType" width="100" renderer="goodsTypeRender"></div>
+				<div header="货物件数" field="goodsCount" width="100" ></div>
+				<div header="货物重量" field="goodsWeight" width="100"></div>
+				<div header="货物体积" field="goodsVolumn" width="100"></div> 
+				<div header="运费" field="costFreight" width="100" ></div> 
+				<div header="保价" field="goodsInsured" width="100"  ></div>
+				<div header="是否已装" field="isloaded" width="100" renderer="isLoaderRender"></div>  
+				<div header="仓库" field="goodsWarehouse" width="100"></div> 
+				<div header="仓位" field="goodsPosition" width="100"></div> 
+			</div>
+		</div>
+	</div>
+	<script type='text/javascript'>
+		jQuery(document).keypress(function(e) {
+			if (e.which == 13)
+				search();
+		});
+		mini.parse();
+		var grid = mini.get('goods_list');
+		
+		function clear(){
+			mini.get("goodsCode").setValue();
+			mini.get("goodsName").setValue();
+			mini.get("goodsPosition").setValue();
+			
+			search();
+		}
+
+		function search() {
+			var paramVo = new QueryParamVo();
+		  	var goodsCode = mini.get("goodsCode").getValue();
+			var goodsName = mini.get("goodsName").getValue();
+			var goodsPosition = mini.get("goodsPosition").getValue();
+			if (goodsCode != null && goodsCode != '') {
+				paramVo.addParam(new QueryParam("goodsCode", goodsCode, 'like'));
+			}
+			if (goodsName != null && goodsName != '') {
+				paramVo.addParam(new QueryParam("goodsName", goodsName, 'like'));
+			}  
+			if (goodsPosition != null && goodsPosition != '') {
+				paramVo.addParam(new QueryParam("goodsPosition", goodsPosition, 'like'));
+			}  
+			
+			grid.load({
+				'params' : mini.encode(paramVo)
+			});
+		}
+		search();
+
+		function goodsAdd() {
+			mini.open({
+				url : "../goods/edit",
+				title : "新增货物",
+				width : 650,
+				height : 500,
+				allowResize: false,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "new"
+					};
+					iframe.contentWindow.SetData(data);
+				},
+				ondestroy : function(action) {
+					grid.reload();
+				}
+			});
+		}
+
+		function goodsEdit() {
+			var rows = grid.getSelecteds();
+			if (rows.length == 0) {
+				mini.alert('请选中要修改的数据！');
+				return;
+			}
+
+			if (rows.length > 1) {
+				alert("请选中一条记录");
+				return;
+			}
+
+			mini.open({
+				url : "../goods/edit",
+				title : "编辑货物",
+				width : 650,
+				height : 500,
+				allowResize: false,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "edit",
+						id : rows[0].id
+					};
+					iframe.contentWindow.SetData(data);
+
+				},
+				ondestroy : function(action) {
+					grid.reload();
+
+				}
+			});
+		}
+
+		function goodsDelete(e) {
+			var rows = grid.getSelecteds();
+			if (rows == null) {
+				mini.alert('请选中要删除的记录！');
+				return;
+			}
+			if (!confirm('您确定要删除吗？'))
+				return;
+
+			var ids = new Array();
+			$.each(rows, function(i, n) {
+				ids.push(n.id);
+			});
+
+			jQuery.ajax({
+				url : '../goods/delete',
+				async : true,
+				cache : false,
+				type : 'post',
+				data : {
+					ids : ids.join(",")
+				},
+				success : function(result) {
+					if (result.success) {
+						mini.alert(result.msg);
+						grid.reload();
+					}
+				},
+				error : function() {
+					mini.alert("遇到异常，请重新删除!");
+				}
+			});
+		}
+		
+		function goodsTypeRender(e) {
+			debugger ;
+            if (e.value == 1) return "大件";
+            else return "小件";
+        }
+		
+		function isLoaderRender(e) {
+			debugger ;
+            if (e.value == 1) return "未装";
+            else return "已装";
+        }
+		
+		
+	</script>
+</body>
+</html>

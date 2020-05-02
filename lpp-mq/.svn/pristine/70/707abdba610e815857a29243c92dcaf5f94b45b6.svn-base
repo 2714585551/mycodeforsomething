@@ -1,0 +1,29 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.dao.impl;
+
+import org.springframework.stereotype.Repository;
+
+import com.lpp.mq.business.dao.SysDriverDao;
+import com.lpp.mq.business.entity.SysDriver;
+import com.lpp.mq.core.dao.imp.BaseDaoImpl;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: SysDriverDaoImpl
+  * @FullClassPath: com.lpp.mq.business.dao.impl.SysDriverDaoImpl
+  * @Description: TODO
+  * @author: Apple
+  * @date: 2017年3月24日 下午1:55:35
+  * @version: 1.0
+  */
+@Repository
+public class SysDriverDaoImpl extends BaseDaoImpl<SysDriver, Long> implements SysDriverDao{
+
+	
+	public PageData<SysDriver> findPage(QueryPage queryPage) {
+		return super.findPage(queryPage);
+	}
+}

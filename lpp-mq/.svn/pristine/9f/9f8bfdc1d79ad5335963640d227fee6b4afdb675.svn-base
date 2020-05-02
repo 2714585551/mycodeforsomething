@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<link href="../js/miniui/themes/default/miniui.css" rel="stylesheet"
+	type="text/css" />
+<script language="javascript" type="text/javascript"
+	src="../js/jquery/jquery-1.4.2.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<title></title>
+</head>
+
+<body>
+	<div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;"><a class="mini-button"
+					plain="true" iconcls="icon-add">新增</a> <a class="mini-button"
+					plain="true" iconcls="icon-remove">删除</a> <span class="separator"></span>
+					<input width="100" id="name" emptyText="姓名" class="mini-textbox" />
+					<a class="mini-button" plain="true" onclick="do_mysearch()"
+					iconcls="icon-search">搜索</a></td>
+			</tr>
+		</table>
+	</div>
+	<div class="mini-fit">
+		<div id="user_list" class="mini-datagrid"
+			style="width: 700px; height: 250px;" url="../user/querylist">
+			<div property="columns">
+				<div type="checkcolumn" header="选择" width="30" align="center"
+					headerAlign="center"></div>
+				<div header="姓名" field="name" width="100"></div>
+				<div header="年龄" field="age" width="100"></div>
+				<div header="电话" field="telephone" width="100"></div>
+				<div header="邮箱" field="email" width="100"></div>
+				<div header="备注" field="mark" width="100"></div>
+
+			</div>
+		</div>
+	</div>
+	<script type='text/javascript'>
+		jQuery(document).keypress(function(e) {
+			if (e.which == 13)
+				do_mysearch();
+		});
+		mini.parse();
+		var grid = mini.get('user_list');
+
+		function do_mysearch() {
+			grid.load({});
+		}
+
+		do_mysearch();
+	</script>
+
+</body>
+</html>

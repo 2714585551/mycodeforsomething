@@ -1,0 +1,39 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.dao;
+
+import java.util.Collection;
+
+import com.lpp.mq.business.entity.SysDriver;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: SysDriverDao
+  * @FullClassPath: com.lpp.mq.business.dao.SysDriverDao
+  * @Description: TODO
+  * @author: Apple
+  * @date: 2017年3月24日 下午1:54:32
+  * @version: 1.0
+  */
+
+public interface SysDriverDao {
+
+	
+	
+	PageData<SysDriver> findPage( QueryPage queryPage);
+	
+	
+	SysDriver findByPK(Long pk);
+	
+	
+	void saveDriver(SysDriver sysDriver);
+	
+	
+	void updateDriver(SysDriver sysDriver);
+	
+	
+	void deleteByPK(Collection<?> ids);
+	
+}

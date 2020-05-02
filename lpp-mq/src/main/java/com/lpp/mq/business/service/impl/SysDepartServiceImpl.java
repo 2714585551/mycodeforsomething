@@ -1,0 +1,63 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.service.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.lpp.mq.business.entity.SysDepart;
+import com.lpp.mq.business.service.SysDepartService;
+import com.lpp.mq.core.dao.BaseDao;
+import com.lpp.mq.core.service.impl.BaseServiceImpl;
+
+/**
+  * @ClassName: SysDepartServiceImpl
+  * @FullClassPath: com.lpp.mq.business.service.impl.SysDepartServiceImpl
+  * @Description: 车次管理实现
+  * @author: Arno
+  * @date: 2017年3月31日 下午3:37:20
+  * @version: 1.0
+  */
+
+@Service
+public class SysDepartServiceImpl extends BaseServiceImpl<SysDepart, Long> implements SysDepartService {
+
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDDHHmmss");
+	
+	@Autowired
+	private BaseDao<SysDepart, Long > baseDao;
+	
+	@Override
+	public BaseDao<SysDepart, Long> getBaseDao() {
+		return baseDao;
+	}
+
+	@Override
+	public void saveSysDepart(SysDepart sysDepart) {
+		Long id = sysDepart.getId();
+		if(null == id){
+			String departCode= "CX-"+sdf.format(new Date());
+			sysDepart.setDepartCode(departCode);
+			sysDepart.setCreateTime(new Date());
+			sysDepart.setIsdepart(1);
+			baseDao.saveOrUpdate(sysDepart);
+		}else{
+			SysDepart update = baseDao.findByPk(sysDepart.getId());
+			BeanUtils.copyProperties(sysDepart, update, new String [] {"departCode","isdepart","createTime","operator"});
+			baseDao.saveOrUpdate(update);
+		}
+	}
+	
+	@Override
+	public void updateLoadStatus(Long pk) {
+		SysDepart find = baseDao.findByPk(pk);
+		find.setIsdepart(2);
+		baseDao.update(find);
+	}
+
+}

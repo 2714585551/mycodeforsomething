@@ -1,0 +1,70 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.dao.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import com.lpp.mq.business.dao.TeacherDao;
+import com.lpp.mq.business.entity.Teacher;
+import com.lpp.mq.core.dao.imp.BaseDaoImpl;
+import com.lpp.mq.core.vo.PageData;
+import com.lpp.mq.core.vo.QueryPage;
+
+/**
+  * @ClassName: TeacherDaoImpl
+  * @FullClassPath: com.lpp.mq.dao.impl.TeacherDaoImpl
+  * @Description: TODO
+  * @author: Arno
+  * @date: 2017年3月6日 下午5:24:26
+  * @version: 1.0
+  */
+
+@Repository
+public class TeacherDaoImpl extends BaseDaoImpl<Teacher, Long> implements TeacherDao {
+
+	@Override
+	public List<Teacher> getTeacherList() {
+		String hql = "from  Teacher  t where t.id=?" ;
+		Object [] params =  new Object []{Long.valueOf(1)};
+		List<Teacher> listByHQL = super.getListByHQL(hql, params );
+		return listByHQL;
+	}
+
+	@Override
+	public Teacher getTeacherByID(Long id) {
+		String hql = "from  Teacher  t where t.id=:id" ;
+		Map<String,Object> paramMap = new HashMap<>();
+		paramMap.put("id", id);
+		
+		
+		/*QueryPage queryPage = new QueryPage();
+		List<QueryPageParam> params = queryPage.getParams();
+		List<Long> ids = new ArrayList<>();
+		ids.add(21l);
+		ids.add(22l);
+		ids.add(23l);
+		params.add(new QueryPageParam("id",QuerySqlTypeEnum.IN.getType(),ids));
+		super.findPage( 1, 3, queryPage );*/
+		
+		QueryPage queryPage = new QueryPage();
+		queryPage.setOderbyType("xx");
+		queryPage.setOrderByField("age");
+		queryPage.setPage(1);
+		queryPage.setPageSize(10);
+		
+		PageData<Teacher> findPage = super.findPage(queryPage );
+		List<Teacher> content = findPage.getContent();
+		for (Teacher teacher : content) {
+			System.out.println(teacher.getName());
+		}
+		
+		
+		return super.getUniqueByHQL(hql, paramMap);
+	}
+	
+}

@@ -1,0 +1,46 @@
+/**
+ * 
+ */
+package com.lpp.mq.business.entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.lpp.mq.core.entity.BaseEntity;
+
+/**
+ * @ClassName: SysUser
+ * @FullClassPath: com.lpp.mq.business.entity.SysUser
+ * @Description: 用户信息
+ * @author: Arno
+ * @date: 2017年3月23日 下午6:32:18
+ * @version: 1.0
+ */
+@Entity
+@Table(name = "t_sys_user")
+public class SysUser extends BaseEntity {
+
+	/** @Fields serialVersionUID : */
+	private static final long serialVersionUID = 6960316304492094253L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID")
+	private Long id;
+	
+	@Column(name="NAME")
+    private String name;
+    
+    @Column(name="PASSWORD")
+    private String pwd;
+
+    @Column(name="AGE")
+    private Integer age;
+	
+	
+
+}

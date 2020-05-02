@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+<title></title>
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-2.0.3.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/miniui/miniui.js"></script>
+<script language="javascript" type="text/javascript" src="../js/boot.js"></script>
+<script language="javascript" type="text/javascript" src="../js/myJs/queryPage.js"></script>
+</head>
+<body>
+
+	<div style="padding-bottom: 15px;">
+		<input width="200" id="driverName" emptyText="名字" class="mini-textbox" />
+		<input width="200" id="driverType" emptyText="证件类型" class="mini-combobox" url="../driver/getDriverType"/> 
+		<a class="mini-button" plain="true" onclick="search()" iconcls="icon-search">搜索</a> 
+		<a class="mini-button" plain="true" onclick="clear()" iconcls="icon-cancel">清空</a>
+	</div>
+
+
+	<div class="mini-toolbar" style="border-bottom: 0; padding: 0px;">
+		<table style="width: 100%;">
+			<tr>
+				<td style="white-space: nowrap;">
+					<a class="mini-button" plain="true" iconcls="icon-add" onclick="driverAdd()">新增</a> <span class="separator"></span> 
+					<a class="mini-button" plain="true" iconCls="icon-edit" onclick="driverEdit()">编辑</a><span class="separator"></span> 
+					<a class="mini-button" plain="true" iconcls="icon-remove" onclick="driverDelete()">删除</a> <span
+					class="separator"></span>
+			</tr>
+		</table>
+	</div>
+	<div>
+		<div id="driver_list" class="mini-datagrid" url="../driver/querylist"
+			idField="id" totalField="total" dataField="data" showPageInfo="true"
+			pageSizeField="pageSize" pageIndexField="pageIndex" pageSize="10"
+			showPager="true" sizeList="[ 10,20,30,50]" pageSize="10"
+			multiSelect="true">
+			<div property="columns">
+				<div type="checkcolumn" header="选择" width="30" align="center" headerAlign="center"></div>
+				<div header="司机姓名" field="driverName" width="100"></div>
+				<div header="司机年龄" field="driverAge" width="100"></div>
+				<div header="司机性别" field="driverSex" width="100" renderer="sexText"></div>
+				<div header="联系电话" field="mobilePhone" width="100"></div>
+				<div header="身份证号码" field="personCard" width="100"></div>
+				<div header="驾照类型" field="driverType" width="100"></div>
+				<div header="驾驶证编号" field="driverNo" width="100"></div>
+				<div header="住址" field="fullAddress" width="100"></div>
+				<div header="领证日期" field="lincenseDate" width="100" dateFormat="yyyy-MM-dd"></div>
+			</div>
+		</div>
+	</div>
+	<script type='text/javascript'>
+		jQuery(document).keypress(function(e) {
+			if (e.which == 13)
+				search();
+		});
+		mini.parse();
+		var grid = mini.get('driver_list');
+		
+		grid.load();
+		
+		function clear(){
+			mini.get("driverName").setValue();
+			mini.get("driverType").setValue();
+		}
+
+		function search() {
+			var paramVo = new QueryParamVo();
+			var driverName = mini.get("driverName").getValue();
+			var driverType = mini.get("driverType").getValue();
+			if (name != null && name != '') {
+				paramVo.addParam(new QueryParam("driverName", driverName, 'like'));
+			}
+			if (driverType != null && driverType != '') {
+				paramVo
+						.addParam(new QueryParam("driverType", driverType, '='));
+			}
+			grid.load({
+				'params' : mini.encode(paramVo)
+			});
+		}
+		search();
+
+		function driverAdd() {
+			mini.open({
+				url : "../driver/edit",
+				title : "新增司机",
+				width : 900,
+				height : 500,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "new"
+					};
+					iframe.contentWindow.SetData(data);
+				},
+				ondestroy : function(action) {
+					grid.reload();
+				}
+			});
+		}
+
+		function driverEdit() {
+			var rows = grid.getSelecteds();
+			if (rows.length == 0) {
+				mini.alert('请选中要修改的数据！');
+				return;
+			}
+
+			if (rows.length > 1) {
+				alert("请选中一条记录");
+				return;
+			}
+
+			mini.open({
+				url : "../driver/edit",
+				title : "编辑司机",
+				width : 900,
+				height : 500,
+				onload : function() {
+					var iframe = this.getIFrameEl();
+					var data = {
+						action : "edit",
+						id : rows[0].id
+					};
+					iframe.contentWindow.SetData(data);
+
+				},
+				ondestroy : function(action) {
+					grid.reload();
+
+				}
+			});
+		}
+
+		function driverDelete(e) {
+			var rows = grid.getSelecteds();
+			if (rows == null) {
+				mini.alert('请选中要删除的记录！');
+				return;
+			}
+			if (!confirm('您确定要删除吗？'))
+				return;
+
+			var ids = new Array();
+			$.each(rows, function(i, n) {
+				ids.push(n.id);
+			});
+
+			jQuery.ajax({
+				url : '../driver/delete',
+				async : true,
+				cache : false,
+				type : 'post',
+				data : {
+					ids : ids.join()
+				},
+				success : function(result) {
+					if (result.success) {
+						mini.alert(result.msg);
+						grid.reload();
+					}
+				},
+				error : function() {
+					mini.alert("遇到异常，请重新删除!");
+				}
+			});
+		}
+		
+		function sexText(e){
+			if(e.value == '1' ){
+				return "男";
+			}
+			return "女";
+		}
+	</script>
+</body>
+</html>
