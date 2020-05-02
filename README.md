@@ -1,0 +1,3 @@
+# mycodeforsomething
+Graduation  project  .... the one is about traffic  system ， the other one is about staff system .....
+the ai hostiptal system is make for my brother  to help him to pass the exam  
